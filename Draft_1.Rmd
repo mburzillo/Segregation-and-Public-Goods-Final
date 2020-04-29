@@ -161,13 +161,6 @@ I was able to successfully replicate all of the main results from Trounstine (20
 
 ## regression 1 Table 1
 
-# fixed effects like a control variable 
-
-# lmer(dependent ~ predictors + (random predictors | group level))
-
-# reml v. log likelihood: default in r appears to be log-likelihood. stata defaults to maximum likelihood
-
-
 # perform a multi-level mixed-effects linear regression of biggest split on the multi-group H index with controls for Herfindahl Diversity Index, % Asian interpolated, % Black interpolated, % Latino interpolated, median household income interpolated, % renters interpolated, percent college grads interpolated, a dummy indicating if there were biracial candidates in the election, a dummy  indicating if the election was nonpartisan, an indicator if the election was a primary, and the log population. The regression also includes fixed effects for year and region and random effects for cities (geo_id2). Diversity is  included because of the claim that more diverse populations will have more heterogeneous political preferences. The other fixed effect control variables are included because they are known to be potentially correlated with segregation. winner == 1 requires that there was a winner in the election.
 
 # regression specification. Apply REML = FALSE. The default for lmer() in R is
@@ -1754,7 +1747,7 @@ The replication exercise and robustness check using multiply imputed data here p
 # Appendix
 
 
-```{r felm, eval = FALSE}
+```{r felm, include = FALSE}
 
 # Main Analysis 2
 
@@ -1815,18 +1808,19 @@ felm3 <- felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopint
 
 ```
 
-```{r main_fp_tables, results = "asis", eval = FALSE}
+```{r main_fp_tables, results = "asis", echo = FALSE}
 
 # create main table for table 3
 
 table2 <- stargazer(felm1, felm2, felm3, omit = c("year", "south", "midwest", "west"), 
                     header = FALSE,
-                    title = "\\textbf{Effect of Segregation on Overall per Capita City Expenditures}")
+                    title = "\\textbf{Effect of Segregation on Overall per Capita City Expenditures}",
+                covariate.labels = c("White/Nonwhite H Index", "Diversity", "Percent Black", "Percent Asian", "Percent Latino", "Change Percent Black", "Change Percent Latino", "Change Percent Asian", "Medain HH Income (1000s)", "Percent Government Worker", "Percent Renters", "Percent 65+", "Percent College Degree", "Population (logged)", "White Ideology", "Constant"))
 
 ```
 
 
-```{r, eval = FALSE}
+```{r, include = FALSE}
 
 # Main Analysis 3
 
@@ -1912,11 +1906,12 @@ felm2_6 <- felm(genrevownpercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctb
 ```
 
 
-```{r results = "asis", eval = FALSE}
+```{r results = "asis", echo = FALSE}
 table3a <- stargazer(felm2_1, felm2_2, felm2_3, 
           omit = c("year", "south", "midwest", "west"), 
           header = FALSE,
-          title = "\\textbf{Effect of Segregation on Public Goods A}")
+          title = "\\textbf{Effect of Segregation on Public Goods A}",
+          covariate.labels = c("White/Nonwhite H Index", "Diversity", "Percent Black", "Percent Asian", "Percent Latino", "Medain HH Income (1000s)", "Percent Government Worker", "Percent Renters", "Percent 65+", "Percent College Degree", "Population (logged)", "Constant"))
 
 table3b <- stargazer(felm2_4, felm2_5, felm2_6, 
           omit = c("year", "south", "midwest", "west"), 
@@ -1927,7 +1922,7 @@ table3b <- stargazer(felm2_4, felm2_5, felm2_6,
 ```
 
 
-```{r iv_regs, eval = FALSE}
+```{r iv_regs, include = FALSE}
 
 ## regression 1 Table 5
 
@@ -2090,19 +2085,19 @@ summary(ivreg7)
 ```
 
 
-# Table 5
-
-```{r results = "asis", echo = FALSE}
+```{r results = "asis", echo = FALSE, eval = FALSE}
 
 table5a <- stargazer(ivreg1, ivreg2, ivreg3, ivreg4,
           omit = c("y5", "y6", "y7", "y8", "y9", "northeast", "south", "midwest", "west"), 
           header = FALSE,
-          title = "\\textbf{Effect of Segregation on City Expenditures, IV Approach A}")
+          title = "\\textbf{Effect of Segregation on City Expenditures, IV Approach A}",
+          covariate.labels = c("White/Nonwhite H Index", "Lagged Direct Gen. Exp.", "Lagged Highway Exp.", "Lagged Police Exp.", "Lagged Parks Exp.", "Diversity", "Percent Black", "Percent Asian", "Percent Latino", "Medain HH Income (1000s)", "Percent Government Worker", "Percent Renters", "Percent 65+", "Percent College Degree", "Constant"))
 
 table5b <- stargazer(ivreg5, ivreg6, ivreg7,
           omit = c("y5", "y6", "y7", "y8", "y9", "northeast","south", "midwest", "west"), 
           header = FALSE,
-          title = "\\textbf{Effect of Segregation on City Expenditures, IV Approach B}")
+          title = "\\textbf{Effect of Segregation on City Expenditures, IV Approach B}",
+          covariate.labels = c("White/Nonwhite H Index", "Lagged Sewers Exp.", "Lagged Gen. Rev. Own Sources", "Lagged Police Exp.", "Lagged Welfare", "Diversity", "Percent Black", "Percent Asian", "Percent Latino", "Medain HH Income (1000s)", "Percent Government Worker", "Percent Renters", "Percent 65+", "Percent College Degree", "Constant"))
 ```
 
 
@@ -2245,7 +2240,7 @@ gt(rp_sub_2) %>%
 ```
 
 
-```{r include = FALSE, include = FALSE}
+```{r fp_summary_table, include = FALSE}
 
 # basic filter for table for all regressions
 
@@ -2668,7 +2663,7 @@ a3_final <- full_join(a3_final, fin_population_tab)
 
 ```
 
-```{r, echo = FALSE}
+```{r fp_summary_table_stargazer, echo = FALSE}
 gt(a3_final) %>%
     tab_header(title = md("**TABLE A3 Summary Statistics: Census of Government Finance and Population**"),
              subtitle = "") %>%
