@@ -1,7 +1,7 @@
 ---
-title: "Milestone 7"
+title: "Investigating the Underprovision of Public Goods: Does Segregation Matter?"
 author: "Maria Burzillo"
-date: "3/28/2020"
+date: "5/8/2020"
 output: 
   pdf_document:
     extra_dependencies: ["rotating"]
