@@ -18,7 +18,7 @@ header_includes:
 
 # Abstract
 
-@trounstine_segregation_2016 suggests that high levels of residential segregation are associated with increased political polarization and decreased public spending. In this analysis, I was able to successfully replicate @trounstine_segregation_2016’s main results. Adding onto her original analysis, I impute a large amount of missing data from the original dataset and re-run the analysis. Finally, I add in income segregation as a predictor in her regressions to assess whether this could be a confounding variable. 
+@trounstine_segregation_2016 suggests that high levels of residential segregation are associated with increased political polarization and decreased public spending. In this analysis, I was able to successfully replicate @trounstine_segregation_2016’s main results. Adding onto her original analysis, I impute a large amount of missing data from the original dataset and re-run the analysis. 
 
 
 ```{r setup, include=FALSE}
@@ -110,10 +110,15 @@ fin_imp <- fin_seg %>%
 # select the relevant variables to be imputed
 
 fin_imp <- fin_imp %>%
-  select(H_citytract_NHW_i, dgepercap_cpi, diversityinterp, pctblkpopinterp, pctasianpopinterp,
-         pctlatinopopinterp, medinc_cpi, pctlocalgovworker_100, pctrentersinterp, pctover65,
-         pctcollegegradinterp, logpop, geo_id2, chng5pctblk, chng5pctlatino, chng5pctasian,
-         ideology_fill, totaltractsf)
+  select(H_citytract_NHW_i, dgepercap_cpi, diversityinterp, pctblkpopinterp,
+         pctasianpopinterp,pctlatinopopinterp, medinc_cpi, pctlocalgovworker_100,
+         pctrentersinterp, pctover65, pctcollegegradinterp, logpop, geo_id2,
+         chng5pctblk, chng5pctlatino, chng5pctasian, ideology_fill)
+
+# When we subset for only the cities in the original analysis, this about doubles the sample size still...
+
+fin_imp_cities <- fin_imp %>%
+  filter(geo_id2 %in% cities_trounstine_fp)
 
 
 miss_var_summary(fin_imp)
@@ -278,7 +283,8 @@ gg_miss_var(fin_imp, show_pct = TRUE)
 # select all variables with missing values for the aggr plot
 
 fin_imp_aggr <- fin_imp %>%
-  select(ideology_fill, H_citytract_NHW_i, chng5pctblk, chng5pctlatino, chng5pctasian, diversityinterp, pctblkpopinterp, pctasianpopinterp,
+  select(ideology_fill, H_citytract_NHW_i, chng5pctblk, chng5pctlatino, chng5pctasian,
+         diversityinterp, pctblkpopinterp, pctasianpopinterp,
          pctlatinopopinterp, medinc_cpi, pctlocalgovworker_100, pctrentersinterp, pctover65,
          pctcollegegradinterp)
 
@@ -318,17 +324,18 @@ imp_1_rp <- mice(rp_impute, method = "cart", maxit = 20)
 
 ```
 
-```{r fp_imputations, include = FALSE}
+```{r fp_imputations_original, include = FALSE}
 
 # perform multiple imputations. We have the same issue here with the default method as with the previous dataset so we use CART. Additionally, because of the extremely large size of this dataset, we choose to only impute the variable H_citytract_NHW_i, as it is the most frequently missing variable and also out main independent variable. Just imputing this allows us to include way more observations in the regression than the original data despite the still large number of NAs overall. One concern here would be that if there was some reason that this variable was missing rather than other variables that only imputing this variable could lead to some bias in the results.  
 
 # generate a blank run to get the method matrix
 
-ini <- mice(fin_imp, maxit=0, print=F)
+ini <- mice(fin_imp, maxit = 0, print = FALSE)
 
 # view the current method settings
 
 meth <- ini$method
+
 
 # change the method variables for all variables except H_citytract_NHW_i to ""
 # so that their missing values aren't imputed
@@ -345,19 +352,29 @@ meth[c("H_citytract_NHW_i", "chng5pctblk",
 
 # perform the multiple imputations with 5 iterations
 
-imp_fs <- mice(fin_imp, method = meth, maxit = 5)
+imp_fs <- mice(fin_imp, method = meth, maxit = 1)
+
+imp_fs_all <- mice(fin_imp, method = "cart", maxit = 5)
 
 # now there are manyb fewer missing variables!!!
 
 miss_var_summary(complete(imp_fs))
 
-head(complete(imp_fs))
-
 miss_var_summary(fin_imp)
+
+282334 - 222957
 
 ```
 
-```{r new_imp}
+
+```{r}
+#now missing 282261
+
+#before impute:
+```
+
+
+```{r new_imp_less_than_17_nas}
 
 fin_imp <- fin_imp %>%
   mutate(nas = is.na(H_citytract_NHW_i) + is.na(dgepercap_cpi) + is.na(diversityinterp) + is.na(pctblkpopinterp)  + is.na(pctasianpopinterp) + is.na(pctlatinopopinterp) + is.na(medinc_cpi) + is.na(pctlocalgovworker_100) + is.na(pctrentersinterp) + is.na(pctover65) + is.na(pctcollegegradinterp) + is.na(logpop) + is.na(geo_id2) + is.na(chng5pctblk) + is.na(chng5pctlatino) + is.na(chng5pctasian) + is.na(logpop) + is.na(geo_id2) + is.na(chng5pctblk) + is.na(chng5pctlatino) + is.na(chng5pctasian) + is.na(ideology_fill))
@@ -403,6 +420,836 @@ meth[c("H_citytract_NHW_i", "chng5pctblk",
 new_imp_fs <- mice(fin_imp_sub, method = meth, maxit = 5)
 
 miss_var_summary(complete(new_imp_fs))
+
+```
+
+
+```{r fp_imputations_cities, include = FALSE}
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_cities, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_cities <- mice(fin_imp_cities, method = meth, maxit = 1)
+
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_cities, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_cities))
+
+miss_var_summary(fin_imp_cities)
+
+5039 - 4966
+
+```
+
+```{r fp_population_full_range}
+
+# what if we condition on population size?
+
+fin_imp_pop_size <- fin_imp %>%
+  filter(logpop > 6 & logpop < 16)
+
+nrow(fin_imp_pop_size)
+
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_pop_size, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_size <- mice(fin_imp_pop_size, method = meth, maxit = 5)
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_pop_size, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_cities))
+
+miss_var_summary(fin_imp_cities)
+
+5039 - 4966
+
+```
+
+```{r 95_pop}
+fin_imp_pop_trounstine_95 <- fin_imp %>%
+  filter(logpop < 11.93437 & logpop > 8.7754)
+
+
+nrow(fin_imp_pop_trounstine_95)
+
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_pop_trounstine_95, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_size_trounstine_95 <- mice(fin_imp_pop_trounstine_95, method = meth, maxit = 5)
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_pop_size_trounstine_95, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_cities))
+
+miss_var_summary(fin_imp_cities)
+
+5039 - 4966
+
+```
+
+
+```{r fp_population_full_range}
+
+# what if we condition on population size?
+
+fin_imp_pop_size <- fin_imp %>%
+  filter(logpop > 6 & logpop < 16)
+
+nrow(fin_imp_pop_size)
+
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_pop_size, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_size <- mice(fin_imp_pop_size, method = meth, maxit = 5)
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_pop_size, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_cities))
+
+miss_var_summary(fin_imp_cities)
+
+5039 - 4966
+
+```
+
+```{r population_first_quartile}
+
+quantile(fin_dge$logpop, c(.25))
+
+quantile(fin_seg$logpop, c(.25), na.rm = T)
+
+fin_imp_pop_trounstine_first_quart <- fin_imp %>%
+  filter(logpop < 9.388152)
+
+
+nrow(fin_imp_pop_trounstine_first_quart)
+
+gg_miss_var(fin_imp_pop_trounstine_first_quart, show_pct = T)
+
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_pop_trounstine_first_quart, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_size_bottom_25 <- mice(fin_imp_pop_trounstine_first_quart, method = meth, maxit = 5)
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_pop_size_bottom_25, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_cities))
+
+miss_var_summary(fin_imp_cities)
+
+5039 - 4966
+
+```
+
+```{r population_top_90_trounstine}
+
+quantile(fin_dge$logpop, c(.90))
+
+quantile(fin_seg$logpop, c(.90), na.rm = T)
+
+fin_imp_pop_top_90_trounstine <- fin_imp %>%
+  filter(logpop > 11.43575)
+
+fin_seg %>%
+  ggplot() +
+  geom_histogram(aes(x = logpop))
+
+
+nrow(fin_imp_pop_top_90_trounstine)
+
+gg_miss_var(fin_imp_pop_top_90_trounstine, show_pct = T)
+
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_pop_top_90_trounstine, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_size_top_90_trounstine <- mice(fin_imp_pop_top_90_trounstine, method = meth, maxit = 5)
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_pop_size_top_90_trounstine, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_cities))
+
+miss_var_summary(fin_imp_cities)
+
+5039 - 4966
+
+```
+
+```{r population_bottom_5_trounstine}
+
+quantile(fin_dge$logpop, c(.05))
+
+quantile(fin_seg$logpop, c(.05), na.rm = T)
+
+fin_imp_pop_bottom_5_trounstine <- fin_imp %>%
+  filter(logpop < 8.775581)
+
+fin_seg %>%
+  ggplot() +
+  geom_histogram(aes(x = logpop))
+
+
+nrow(fin_imp_pop_bottom_5_trounstine)
+
+gg_miss_var(fin_imp_pop_bottom_5_trounstine, show_pct = T)
+
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_pop_bottom_5_trounstine, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_size_bottom_5_trounstine <- mice(fin_imp_pop_bottom_5_trounstine, method = meth, maxit = 1)
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_pop_size_bottom_5_trounstine, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_pop_size_bottom_5_trounstine))
+
+miss_var_summary(fin_imp_cities)
+
+
+nrow(complete(imp_fs_pop_size_bottom_5_trounstine))
+
+5039 - 4966
+
+```
+
+```{r population_bottom_1}
+
+quantile(fin_dge$logpop, c(.01))
+
+quantile(fin_seg$logpop, c(.20), na.rm = T)
+
+fin_imp_pop_bottom_1_trounstine <- fin_imp %>%
+  filter(logpop < 8.364976 )
+
+fin_seg %>%
+  ggplot() +
+  geom_histogram(aes(x = logpop))
+
+
+nrow(fin_imp_pop_bottom_1_trounstine)
+
+gg_miss_var(fin_imp_pop_bottom_1_trounstine, show_pct = T)
+
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_pop_bottom_1_trounstine, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_size_bottom_1_trounstine <- mice(fin_imp_pop_bottom_1_trounstine, method = meth, maxit = 1)
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_pop_size_bottom_1_trounstine, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_cities))
+
+miss_var_summary(fin_imp_cities)
+
+5039 - 4966
+
+```
+
+```{r population_over_Baqir}
+
+# Baqir et al uses city as population above 25,000
+
+baqir <- log(25000)
+
+fin_imp_pop_over_baqir <- fin_imp %>%
+  filter(logpop > baqir )
+
+
+nrow(fin_imp_pop_over_baqir)
+
+gg_miss_var(fin_imp_pop_over_baqir, show_pct = T)
+
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_pop_over_baqir, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_overbaqir <- mice(fin_imp_pop_over_baqir, method = meth, maxit = 5)
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_pop_overbaqir, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_cities))
+
+miss_var_summary(fin_imp_cities)
+
+5039 - 4966
+
+```
+
+
+```{r population_under_Baqir}
+
+# Baqir et al uses city as population above 25,000
+
+baqir <- log(25000)
+
+fin_imp_pop_under_baqir <- fin_imp %>%
+  filter(logpop < baqir )
+
+
+nrow(fin_imp_pop_under_baqir)
+
+gg_miss_var(fin_imp_pop_under_baqir, show_pct = T)
+
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_pop_under_baqir, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_under_baqir <- mice(fin_imp_pop_under_baqir, method = meth, maxit = 1)
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_pop_under_baqir, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_cities))
+
+miss_var_summary(fin_imp_cities)
+
+5039 - 4966
+
+```
+
+
+
+```{r population_mid_50}
+
+# essentially the same - let's do full population
+(quantile(fin_seg$logpop, c(.25, .75), na.rm = T))
+(quantile(fin_imp$logpop, c(.25, .75), na.rm = T))
+
+baqir <- log(25000)
+
+fin_imp_pop_mid_50 <- fin_imp %>%
+  filter(logpop > 5.777652 & logpop < 7.936303)
+
+
+nrow(fin_imp_pop_mid_50)
+
+gg_miss_var(fin_imp_pop_mid_50, show_pct = T)
+
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_pop_mid_50, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_mid_50 <- mice(fin_imp_pop_mid_50, method = meth, maxit = 1)
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_pop_mid_50, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_cities))
+
+miss_var_summary(fin_imp_cities)
+
+5039 - 4966
+
+```
+
+```{r population_top_1_trounstine}
+
+
+(quantile(fin_seg$logpop, c(.99), na.rm = T))
+(quantile(fin_dge$logpop, c(.99), na.rm = T))
+
+
+fin_imp_top_1_trounstine <- fin_imp %>%
+  filter(logpop > 13.1907 )
+
+
+nrow(fin_imp_top_1_trounstine)
+
+gg_miss_var(fin_imp_top_1_trounstine, show_pct = T)
+
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_top_1_trounstine, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_top_1_trounstine <- mice(fin_imp_top_1_trounstine, method = meth, maxit = 5)
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_pop_top_1_trounstine, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+
+nrow(complete(imp_fs_pop_top_1_trounstine))
+
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_cities))
+
+miss_var_summary(fin_imp_cities)
+
+5039 - 4966
+
+```
+
+```{r population_top_1}
+
+
+(quantile(fin_seg$logpop, c(.99), na.rm = T))
+(quantile(fin_dge$logpop, c(.99), na.rm = T))
+
+
+fin_imp_top_1 <- fin_imp %>%
+  filter(logpop > 11.28648)
+
+
+nrow(fin_imp_top_1)
+
+gg_miss_var(fin_imp_top_1, show_pct = T)
+
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_top_1, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_top_1 <- mice(fin_imp_top_1_trounstine, method = meth, maxit = 5)
+
+
+# fit multiple imputed datasets
+
+fit_imp_felm1 <- with(imp_fs_pop_top_1, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_imp_felm1 <- pool(fit_imp_felm1)
+imp_felm1_sum <- summary(pool_imp_felm1)
+
+# RESULTS ARE ESSENTIALLY THE SAME!
+print(imp_felm1_sum)
+
+
+
+nrow(complete(imp_fs_pop_top_1))
+
+
+
+# doesn't add very much to the sample though, still, robust to additional 73 entries
+
+miss_var_summary(complete(imp_fs_cities))
+
+miss_var_summary(fin_imp_cities)
+
+5039 - 4966
+
 ```
 
 
@@ -607,6 +1454,8 @@ fit_imp_felm3 <- with(imp_fs, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversity
 pool_imp_felm3 <- pool(fit_imp_felm3)
 imp_felm3_sum <- summary(pool_imp_felm3)
 
+print(imp_felm1_sum)
+
 ```
 
 ```{r fs_imputed_data_included_calc, include = FALSE}
@@ -628,15 +1477,6 @@ fin <- complete(imp_fs) %>%
 # create dge variable used in regression
 
 fin_dge <-fin %>% filter(dgepercap_cpi != 0)
-
-fin_dge_tab <- tibble(
-  Variable = "Direct General Expenditure per Capita",
-  Obs = nrow(fin_dge),
-  Mean = mean(fin_dge$dgepercap_cpi, na.rm = T),
-  SD = sd(fin_dge$dgepercap_cpi, na.rm = T),
-  Min = min(fin_dge$dgepercap_cpi, na.rm = T),
-  Max = max(fin_dge$dgepercap_cpi, na.rm = T)
-)
 
 # now we have 73,119 observations compared to 13,742. Calculation:
 
@@ -1432,6 +2272,26 @@ fin_dge_tab <- tibble(
 )
 
 print(fin_dge_tab)
+
+
+# cities in original Trounstine
+
+cities_trounstine_fp <- fin_dge %>%
+  select(geo_id2) %>%
+  unique() %>%
+  pull()
+
+# pop quantiles original Trounstine
+
+quantile(fin_dge$logpop, c(.10, .25, .5, .75, .90))
+
+quantile(fin_dge$logpop, c(.05, .95))
+
+nrow(fin_imp)
+
+fin_imp_pop_trounstine_95 <- fin_imp %>%
+  filter(logpop < 11.93437 & logpop > 8.7754)
+
 
 # creat summary for highways
 fin_hw <-fin %>% filter(highwayspercapNC_cpi != 0)
