@@ -18,7 +18,7 @@ header_includes:
 
 # Abstract
 
-@trounstine_segregation_2016 suggests that high levels of residential segregation are associated with increased political polarization and decreased public spending. In this analysis, I was able to successfully replicate @trounstine_segregation_2016’s main results. Adding onto her original analysis, I impute a large amount of missing data from the original dataset and re-run the analysis. 
+@trounstine_segregation_2016 suggests that high levels of residential segregation are associated with increased political polarization and decreased public spending. In this analysis, I was able to successfully replicate @trounstine_segregation_2016’s main results. I then attempted to better deal with the large amounts of missing data in the datasets used in the original analysis by multiply imputing missing values using the mice() package and then by re-running the original models using the multiply imputed datasets. My results suggest that segregation is associated with increased racial political polarization, although maybe not as strongly as Trounstine (2016) originally suggested. Furthermore, I find that Trounstine (2016)'s conclusion that increases in segregation are associated with decreases in public spending holds for large cities, but that diversity is a better explanatory factor for small cities. 
 
 
 ```{r setup, include=FALSE}
