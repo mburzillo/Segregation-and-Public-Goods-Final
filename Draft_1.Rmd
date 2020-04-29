@@ -242,7 +242,10 @@ rp_facet <- rp_impute %>%
              "pctrentersinterp", "pctcollegegradinterp", "biracial", "nonpartisan",
                "south", "midwest", "west", "whiteideology_fill2", "year")
 
-# gg_miss_var(rp_impute, show_pct = TRUE)
+gg_miss_var(rp_impute, show_pct = TRUE) +
+  ggtitle("% Missing Values in Trounstine (2016)'s Racial Polarization Dataset")
+
+nrow(rp_impute)
 
 
 ```
@@ -297,7 +300,7 @@ aggr(new_try, plot = TRUE, bars = FALSE, col=c('navyblue','red'), numbers=TRUE)
 
 aggr(fin_imp_aggr, plot = TRUE, bars = TRUE, col=c('navyblue','red'), numbers= FALSE, cex.axis=.5, gap=2, ylab=c("Proporiton of Missing Values","Combinations"))
 title(main = "Patterns of Missingness in the Financial Segregation Data",
-      sub = "Is this a caption? qiufwnjekfewkfnwein\nwefjwenmf wiufnwqjenf ewfuiwjnef nfijefnwjenfkqwjnf lqwjefnjqwefjwnef winfjqwhf hjwefwiuefief welfiunqlfjnqkjwe qqfniquwenjfjq iqfnjkjeq rfiunfj q")
+      sub = "")
 
 # this plot tells us that only .58% of the data are complete (not missing anything)
 
