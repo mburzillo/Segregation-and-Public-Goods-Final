@@ -5,15 +5,11 @@ date: "5/8/2020"
 output: 
   pdf_document:
     fig_caption: yes
-    extra_dependencies: ["rotating"]
 bibliography: final_proj_bib.bib
 #biblio-style: "apalike"
 link_citations: true
-header_includes:
-  usepackage{float}
-  usepackage{dcolumn}
-  usepackage{rotating}
-  restylefloat{table}
+keep_tex: yes
+header_includes: \usepackage{float}
   
 ---
 
@@ -23,7 +19,7 @@ header_includes:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", fig.pos = "!H")
 knitr::write_bib(c("knitr", "stringr"), "bib.bib", width = 60)
 library(haven)
 library(gtable)
@@ -32,7 +28,6 @@ library(tidyverse)
 library(gt)
 library(gtsummary)
 library(knitr)
-library(stargazer)
 library(lme4)
 library(margins)
 library(reprex)
@@ -193,6 +188,8 @@ In an attempt to better deal with the problem of missing data in @trounstine_seg
 
 Before performing the multiple imputations on the datasets, I first examined the missing data for patterns. To better understand any potential patterns in missing data, I plotted the pattern of missingness and created a histogram showing the frequency of missing values for those variables with missing values in figure X1 for the racial polarization data and figure X2 for the financial segregation data. Looking at figure X1, the histogram shows that the variables for the largest vote split along racial lines and the variable indicating whether or not the election had candidates of more than one race had by far the largest percentages of missing data, missing %`r round(sum(is.na(rp_impute$biggestsplit))/nrow(rp_impute)*100,2)` and  %`r round(sum(is.na(rp_impute$biracial))/nrow(rp_impute)*100,2)`, respectively. It is important to note that the variable for the largest vote split along racial lines is the dependent variable in the regresison analysis, and thus, we are missing a large percentage of this key variable. From the plot on the right, we can see that approximately 42% of observations are complete (have no missing values). There seem to be a correspondence between missing a value for the largest vote split and missing a value for the biracial election indicator. There also seem to be about 2% of values for wich most of the variables are missing. However, most observations are not missing more than 2-3 values. 
 
+
+
 # Appendix
 
 ```{r include = FALSE}
@@ -226,7 +223,6 @@ m3 <- lmer(biggestsplit ~ H_citytract_NHW_i + diversityinterp + pctasianpopinter
 
 ```
 
-
 ```{r results="asis", echo = FALSE, fig.cap= "THIS IS A CAPTION IS IT WORKING WHAT IS GOING ON!"}
 
 # create a stargazer table of the results
@@ -240,10 +236,338 @@ t1 <- stargazer(m1, m2, m3, omit = c("year", "south", "midwest", "west"),
                 covariate.labels = c("Multigroup H Index", "White/Nonwhite H Index", "Diversity", "Percent Asian", "Percent Black", "Percent Latino", "Medain HH Income (1000s)", "Percent Renters", "Percent College Degree", "Biracial Contest", "Nonpartisan Election", "Primary Election", "Population (logged)", "White Ideology", "Constant"),
                 dep.var.labels = c("Racial Divide"),
                 column.labels = c("Multigroup H Index", "White/Nonwhite H Index", "Ideology Controls"),
-                notes = "This table displays the results of the replication effort of the analyses conducted in Trounstine (2016) using the racial polarization dataset. The replication code can be found on my personal Github repository, which is linked in the introduction. The original table is displayed for comparison as Figure 1.)")
+                notes = "This table displays the results of the replication\neffort of the analyses conducted in Trounstine (2016) using the racial polarization dataset.\nThe replication code can be found on my personal Github repository, which is linked in the introduction. The original table is displayed for comparison as Figure 1.)",
+                notes.align = "l")
 
 # note: "This table displays the results of the replication effort of the analyses conducted in Trounstine (2016) using the racial polarization dataset. The replication code can be found on my personal [Github repository](https://github.com/mburzillo/new_final_project). The original table is displayed for comparison as Figure 1.")
 
 ```
 
+
 ![This is the original table displaying the results of the models for the effects of residential segregation on political polarization from page 713 of @trounstine_segregation_2016. My replication of these results can be found in Table 1 in this paper.](table_1.png)
+
+
+
+```{r felm, include = FALSE}
+
+# Main Analysis 2
+
+## regression 1 Table 2
+
+# The following is a fixed effects model regression with clustering around
+# geo_id2. It mandates that total census tracts in the city is greater than 1,
+# which we want because our measure of evenness of racial spread is constant for
+# cities with only one tract by our definition (which requires comparing tracts
+# within cities). It also mandates that Direct General Expenditures (DGE) per
+# capita, CPI adjusted is not equal to 0, which would be problematic and
+# indicate a potential data error. This regression regresses the DGE per capita
+# on the the two-group calculation of  Theil's H interpolated. Controls are
+# included for diversity and the % populations of Blacks, Asians, and Latinos to
+# help identify whether it is actually diversity that drives down spending.These
+# demographic controls also help to account for the fact that whites and
+# minorities tend to perfer different levels of government spending in general.
+# This will help isolate the effects of segregation v. other forms of diversity
+# on public spending. Other controls for Median household income, CPI adjusted,
+# percent over 65, percent college grads, percent local government workers, log
+# population help control for additional factors related to segregation and
+# expenditure. Controls for percent renters interpolated and Median household
+# income also help to control for the general wealth of cities, which could be a
+# potential driver of public spending. Fixed effects for cities are also
+# included  so that the author can examine the effect of segregation in the same
+# city over  time, which also helps control for many other factors not otherwise
+# taken into account (such as city age)
+
+# apply the conditions in Stata regression
+
+fin_seg_sub <- fin_seg %>%
+  filter(totaltractsf > 1 | is.na(totaltractsf), dgepercap_cpi != 0) %>%
+  mutate(medinc_cpi = medinc_cpi/1000)
+
+
+# felm(y~x | factor(fe1) + factor(fe2) | 0 | clustervar)
+
+felm1 <- felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2, data = fin_seg_sub)
+
+## regression 2 Table 2
+
+# This regression is the same as above except instead of using diversity, a new
+# control is added for the five year changes in racial group shares. The goal
+# here is to see whether or not changes in diversity are a driving factor
+# (rather than absolute levels of diversity).
+
+
+felm2 <- felm(dgepercap_cpi ~ H_citytract_NHW_i + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + chng5pctblk + chng5pctlatino + chng5pctasian+ medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2, data = fin_seg_sub)
+
+## Regression 3 Table 2
+
+# Column 3
+
+# As in column 3 of table 1, this regression simply adds in a control for  mean  ideology of city residents from General Social Survey (GSS) to control for the  possibility that ideology that segregated cities are more ideologically  conservative and that the conservative nature of segregated cities is what actually drives the effect.
+
+felm3 <- felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop + ideology_fill | factor(geo_id2) |0| geo_id2, data = fin_seg_sub)
+
+
+```
+
+```{r main_fp_tables, results = "asis", echo = FALSE}
+
+# create main table for table 3
+
+table2 <- stargazer(felm1, felm2, felm3, omit = c("year", "south", "midwest", "west"), 
+                    header = FALSE,
+                    title = "\textbf{Effect of Segregation on Overall per Capita City Expenditures}",
+                    covariate.labels = c("White/Nonwhite H Index", "Diversity", "Percent Black", "Percent Asian", "Percent Latino", "Change Percent Black", "Change Percent Latino", "Change Percent Asian", "Medain HH Income (1000s)", "Percent Government Worker", "Percent Renters", "Percent 65+", "Percent College Degree", "Population (logged)", "White Ideology", "Constant"))
+
+```
+
+
+```{r, include = FALSE}
+
+# Main Analysis 3
+
+## regression 1 Table 3
+
+# Column 1
+
+# The following is a fixed effects model regression with clustering once again around geo_id2. Again, the if statements at the end mandate that total census tracts in the city is greater than 1, which we want because our measure of evenness of racial spread is constant for cities with only one tract by our definition (which requires comparing tracts within cities). They also mandate that the highways per capita, CPI adjsuted with no cap extend (lagged 5 years) is not equal to 0, which would be problematic and indicate a potential data error. The dependent variable here is highways per capita, CPI adjsuted with no cap extend (lagged 5 years) and it is regressed on the two group calculation of Theil's H, interpolated. Controls are added for diversity, percent population of Blacks, Asians, and Latinos, and median household CPI adjusted income as well as for % local government worker hundreds, percent rentership, percent over 65, percent college graduates, and the log of the population. This essentially examines the effect of segregation on the specific public good of highways. As in the previous table's regressions, fixed effects for cities are also included so that the author can examine the effect of segregation in the same city over time, which also helps control for many other factors not otherwise taken into account (such as city age) *
+
+
+fin_seg_sub <- fin_seg %>%
+  filter(totaltractsf > 1 | is.na(totaltractsf), highwayspercapNC_cpi != 0) %>%
+  mutate(medinc_cpi = medinc_cpi/1000)
+
+felm2_1 <- felm(highwayspercapNC_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2, data = fin_seg_sub)
+
+## regression 2 Table 3
+
+# Column 2
+
+# This is the same regression as column 1, but this time the dependent variable
+# is police per capita, CPI adjusted with no cap extend. This essentially
+# examines the effect of segregation on the specific public good of police per
+# capita.
+
+fin_seg_sub <- fin_seg %>%
+  filter(totaltractsf > 1 | is.na(totaltractsf), policepercapNC_cpi != 0) %>%
+  mutate(medinc_cpi = medinc_cpi/1000)
+
+felm2_2 <- felm( policepercapNC_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2, data = fin_seg_sub)
+
+
+# Column 3
+fin_seg_sub <- fin_seg %>%
+  filter(totaltractsf > 1 | is.na(totaltractsf), parkspercapNC_cpi != 0) %>%
+  mutate(medinc_cpi = medinc_cpi/1000)
+
+# This is again the same regression, but this time the dependent variable is
+# parks per capita, CPI adjusted with no cap extend. This essentially examines
+# the effect of segregation on the specific public good of parks.
+
+felm2_3 <- felm(parkspercapNC_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2, data = fin_seg_sub)
+
+# Column 4
+
+# This is again the same regression, but this time the dependent variable is
+# sewers per capita, CPI adjusted with no cap extend. This essentially examines
+# the effect of segregation on the specific public good of sewers.
+
+fin_seg_sub <- fin_seg %>%
+  filter(totaltractsf > 1 | is.na(totaltractsf), sewerspercapNC_cpi != 0) %>%
+  mutate(medinc_cpi = medinc_cpi/1000)
+
+felm2_4 <- felm(sewerspercapNC_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2, data = fin_seg_sub)
+
+
+# Column 5
+
+# This is again the same regression, but this time the dependent variable is
+# Welfare, Health, Housing per capita, CPI adjusted, no cap expend. This
+# essentially examines the effect of segregation on the specific public good of
+# welfare and housing.
+
+fin_seg_sub <- fin_seg %>%
+  filter(totaltractsf > 1 | is.na(totaltractsf), welfhoushealthNC_cpi != 0) %>%
+  mutate(medinc_cpi = medinc_cpi/1000)
+
+felm2_5 <- felm(welfhoushealthNC_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2, data = fin_seg_sub)
+
+
+# Column 6
+
+# This is again the same regression, but this time the dependent variable is own
+# source of general revenue per capita, CPI adjusted. This essentially examines
+# the effect of segregation on the specific public good of own source revenue.
+
+fin_seg_sub <- fin_seg %>%
+  filter(totaltractsf > 1 | is.na(totaltractsf), genrevownpercap_cpi != 0) %>%
+  mutate(medinc_cpi = medinc_cpi/1000)
+
+felm2_6 <- felm(genrevownpercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2, data = fin_seg_sub)
+
+```
+
+
+```{r iv_regs, include = FALSE}
+
+## regression 1 Table 5
+
+# Top Row
+
+# Column 1
+
+# This is an instrumental variable regression with DGE per capita, adjusted by the CPI, as the dependent variable and total number of waterways as the instrumental variable for segregation. The instrument includes the log of the population in the first stage because the number of waterways is positively correlated to population and population is positively correlated with segregation. The control variables are the same as those in the regressions for Table 2 except for 2 changes: since the number of waterways does not change, there is no need for city fixed effects. Instead, we include fixed effects for the region and year. A lagged version of the dependent variable (dgepercap_cpilag) is added to the regressions to account for the high correlation between  observations for the same city over time and because changes in local budgets typically are incremental (NOTE: why exactly do we do this/why does it help/why not do it in the non-intstrumental regressions?). 
+
+fin_seg_1 <- fin_seg %>%
+  filter(dgepercap_cpi != 0) %>%
+  mutate(medincinterp = medincinterp/1000)
+
+glimpse(fin_seg_1$medincinterp)
+
+# good explanation: http://eclr.humanities.manchester.ac.uk/index.php/IV_in_R
+
+# iv = ivreg(second stage regression | instrument1 + instrument2 )
+
+ivreg1 <- ivreg(dgepercap_cpi ~ H_citytract_NHW_i + dgepercap_cpilag + diversityinterp +
+                  pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +
+                  pctcollegegradinterp + northeast + south + midwest + y5 + 
+                  y6 + y7 + y8 + y9 | total_rivs_all + 
+                  logpop + dgepercap_cpilag + diversityinterp + pctblkpopinterp + 
+                  pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +   
+                  pctcollegegradinterp + northeast + south + 
+                  midwest + y5 + y6 + y7 + y8 + y9, data = fin_seg_1)
+
+
+# Column 2
+
+# this is the same regression as for column 1 but now we use the dependent variable highwayspercapNC_cpi to assess the effect of the instrumental  variable on highways per capita *
+
+fin_seg_2 <- fin_seg %>%
+  filter(highwayspercapNC_cpi != 0) %>%
+  mutate(medincinterp = medincinterp/1000)
+
+ivreg2 <- ivreg(highwayspercapNC_cpi ~ H_citytract_NHW_i + highwayspercapNC_cpilag + diversityinterp +
+                  pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +
+                  pctcollegegradinterp + northeast + south + midwest + y5 + 
+                  y6 + y7 + y8 + y9 | total_rivs_all + 
+                  logpop + highwayspercapNC_cpilag + diversityinterp + pctblkpopinterp + 
+                  pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +   
+                  pctcollegegradinterp + northeast + south + 
+                  midwest + y5 + y6 + y7 + y8 + y9, data = fin_seg_2)
+
+
+# Column 3
+
+# this is the same regression as for column 1 but now we use the dependent variable policepercapNC_cpi to assess the effect of the instrumental variable on police per capita 
+
+fin_seg_3 <- fin_seg %>%
+  filter(policepercapNC_cpi != 0) %>%
+  mutate(medincinterp = medincinterp/1000)
+
+ivreg3 <- ivreg(policepercapNC_cpi ~ H_citytract_NHW_i + policepercapNC_cpilag + diversityinterp +
+                  pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +
+                  pctcollegegradinterp + northeast + south + midwest + y5 + 
+                  y6 + y7 + y8 + y9 | total_rivs_all + 
+                  logpop + policepercapNC_cpilag + diversityinterp + pctblkpopinterp + 
+                  pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +   
+                  pctcollegegradinterp + northeast + south + 
+                  midwest + y5 + y6 + y7 + y8 + y9, data = fin_seg_3)
+
+
+# Column 4 this is the same regression as for column 1 but now we use the
+# dependent variable parkspercapNC_cpi to assess the effect of the instrumental
+# variable on parks per capita
+
+
+fin_seg_4 <- fin_seg %>%
+  filter(parkspercapNC_cpi != 0) %>%
+  mutate(medincinterp = medincinterp/1000)
+
+ivreg4 <- ivreg(parkspercapNC_cpi ~ H_citytract_NHW_i + parkspercapNC_cpilag + diversityinterp +
+                  pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +
+                  pctcollegegradinterp + northeast + south + midwest + y5 + 
+                  y6 + y7 + y8 + y9 | total_rivs_all + 
+                  logpop + parkspercapNC_cpilag + diversityinterp + pctblkpopinterp + 
+                  pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +   
+                  pctcollegegradinterp + northeast + south + 
+                  midwest + y5 + y6 + y7 + y8 + y9, data = fin_seg_4)
+
+
+# Bottom Row
+
+# Column 1
+
+# this is the same regression as for column 1 but now we use the dependent
+# variable sewerspercapNC_cpi to assess the effect of the instrumental variable
+# on sewers per capita
+
+fin_seg_5 <- fin_seg %>%
+  filter(sewerspercapNC_cpi != 0) %>%
+  mutate(medincinterp = medincinterp/1000)
+
+ivreg5 <- ivreg(sewerspercapNC_cpi ~ H_citytract_NHW_i + sewerspercapNC_cpilag + diversityinterp +
+                  pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +
+                  pctcollegegradinterp + northeast + south + midwest + y5 + 
+                  y6 + y7 + y8 + y9 | total_rivs_all + 
+                  logpop + sewerspercapNC_cpilag + diversityinterp + pctblkpopinterp + 
+                  pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +   
+                  pctcollegegradinterp + northeast + south + 
+                  midwest + y5 + y6 + y7 + y8 + y9, data = fin_seg_5)
+
+
+# Column 3
+
+# this is the same regression as for column 1 but now we use the dependent variable genrevownpercap_cpi to assess the effect of the instrumental variable on own source revenue per capita 
+
+fin_seg_6 <- fin_seg %>%
+  filter(genrevownpercap_cpi != 0) %>%
+  mutate(medincinterp = medincinterp/1000)
+
+ivreg6 <- ivreg(genrevownpercap_cpi ~ H_citytract_NHW_i + genrevownpercap_cpilag + diversityinterp +
+                  pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +
+                  pctcollegegradinterp + northeast + south + midwest + y5 + 
+                  y6 + y7 + y8 + y9 | total_rivs_all + 
+                  logpop + genrevownpercap_cpilag + diversityinterp + pctblkpopinterp + 
+                  pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +   
+                  pctcollegegradinterp + northeast + south + 
+                  midwest + y5 + y6 + y7 + y8 + y9, data = fin_seg_6)
+
+
+# Column 2
+
+# this is the same regression as for column 1 but now we use the dependent
+# variable welfhoushealthNC_cpi to assess the effect of the instrumental
+# variable on welfare per capita
+
+fin_seg_7 <- fin_seg %>%
+  filter(welfhoushealthNC_cpi != 0) %>%
+  mutate(medincinterp = medincinterp/1000)
+
+ivreg7 <- ivreg(welfhoushealthNC_cpi ~ H_citytract_NHW_i + welfhoushealthNC_cpilag  + diversityinterp +
+                  pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +
+                  pctcollegegradinterp + northeast + south + midwest + y5 + 
+                  y6 + y7 + y8 + y9 | total_rivs_all + 
+                  logpop + welfhoushealthNC_cpilag + diversityinterp + pctblkpopinterp + 
+                  pctasianpopinterp + pctlatinopopinterp + medincinterp +
+                  pctlocalgovworker_100 + pctrentersinterp + pctover65 +   
+                  pctcollegegradinterp + northeast + south + 
+                  midwest + y5 + y6 + y7 + y8 + y9, data = fin_seg_7)
+
+summary(ivreg7)
+
+```
+
+
+# Bibliography

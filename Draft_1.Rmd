@@ -9,10 +9,10 @@ bibliography: final_proj_bib.bib
 #biblio-style: "apalike"
 link_citations: true
 header_includes:
-  usepackage{float}
-  usepackage{dcolumn}
-  usepackage{rotating}
-  restylefloat{table}
+  \usepackage{float}
+  \usepackage{dcolumn}
+  \usepackage{rotating}
+  \restylefloat{table}
   
 ---
 
