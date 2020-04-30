@@ -19,7 +19,7 @@ header_includes: \usepackage{float}
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align = "center", fig.pos = "!H")
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 knitr::write_bib(c("knitr", "stringr"), "bib.bib", width = 60)
 library(haven)
 library(gtable)
@@ -43,6 +43,7 @@ library(naniar)
 library(mice)
 library(gtsummary)
 library(VIM)
+library(kableExtra)
 ```
 
 ```{r data_imports, include = FALSE}
@@ -188,11 +189,109 @@ In an attempt to better deal with the problem of missing data in @trounstine_seg
 
 Before performing the multiple imputations on the datasets, I first examined the missing data for patterns. To better understand any potential patterns in missing data, I plotted the pattern of missingness and created a histogram showing the frequency of missing values for those variables with missing values in figure X1 for the racial polarization data and figure X2 for the financial segregation data. Looking at figure X1, the histogram shows that the variables for the largest vote split along racial lines and the variable indicating whether or not the election had candidates of more than one race had by far the largest percentages of missing data, missing %`r round(sum(is.na(rp_impute$biggestsplit))/nrow(rp_impute)*100,2)` and  %`r round(sum(is.na(rp_impute$biracial))/nrow(rp_impute)*100,2)`, respectively. It is important to note that the variable for the largest vote split along racial lines is the dependent variable in the regresison analysis, and thus, we are missing a large percentage of this key variable. From the plot on the right, we can see that approximately 42% of observations are complete (have no missing values). There seem to be a correspondence between missing a value for the largest vote split and missing a value for the biracial election indicator. There also seem to be about 2% of values for wich most of the variables are missing. However, most observations are not missing more than 2-3 values. 
 
+```{r rp_missing_plot, echo = FALSE, warning = FALSE}
+
+# don't show the warning, it's just an irrelevant column missing a name
+
+# plot the missing variables if desired
+
+rp_facet <- rp_impute %>%
+   select("medincinterp",
+             "biggestsplit", "diversityinterp",
+             "pctasianpopinterp", "pctblkpopinterp", "pctlatinopopinterp",
+             "pctrentersinterp", "pctcollegegradinterp", "biracial", "nonpartisan",
+               "south", "midwest", "west", "whiteideology_fill2", "year")
+
+gg_miss_var(rp_impute, show_pct = TRUE) +
+  ggtitle("% Missing Values in Trounstine (2016)'s Racial\nPolarization Dataset") +
+  labs(caption = ",jweh,rbguywaflkwanejkfhbwa,keifjlqwibfkjqwhbsfjkhwbsdwhqefhgwef") +
+  theme(plot.caption = element_text(hjust = 0))
+
+nrow(rp_impute)
+
+
+```
+
+```{r rp_aggr_plot, echo = FALSE, fig.cap = "This plot examines the pattern of missing data in the the original racial polarization dataset from Trounstine (2016). The plot on the left shows the percentage of missing data for each variable with missing data and reveals that the variables that are missing by far the most data are the largest vote split along racial lines (biggestsplit) and the variable indicating whether or not the election had candidates of more than one race (biracial). The plot on the right shows the pattern of missingness among the variables. We can see that approximately 42% of observations are complete (have no missing values). There seems to be a correspondence between missing a value for biggest split and missing biracial. There also seem to be about 2% of values for which most of the variables are missing. However, most observations are not missing more than 2-3 values."}
+
+# select only the missing values
+
+rp_aggr <- rp_impute %>%
+   select("biggestsplit", "biracial", "whiteideology_fill2", "medincinterp",
+            "diversityinterp",
+             "pctasianpopinterp", "pctblkpopinterp", "pctlatinopopinterp",
+             "pctrentersinterp", "pctcollegegradinterp", "nonpartisan",
+               "south", "midwest", "west")
+
+# create an aggr plot for the missing values
+par(oma=c(0,0,3,0))
+par(omi=c(1,1,1,1))
+aggr(rp_aggr, bars = TRUE, combined = T, col=c('navyblue','red'), numbers=TRUE, cex.axis=.5, gap=1, ylab=c("Proporiton of Missing Values","Combinations"))
+title(main = "Patterns of Missingness in the Financial Segregation Data",
+      sub = "", line = 2)
+
+
+# caption for this plot when I figure out how to do it... : This plot examines the pattern of missing data in the the original racial polarization dataset from Trounstine (2016). The plot on the left shows the percentage of missing data for each variable with missing data and reveals that the variables that are missing by far the most data are the largest vote split along racial lines (biggestsplit) and the variable indicating whether or not the election had candidates of more than one race (biracial). The plot on the right shows the pattern of missingness among the variables. We can see that approximately 42% of observations are complete (have no missing values). There seems to be a correspondence between missing a value for biggest split and missing biracial. There also seem to be about 2% of values for which most of the variables are missing. However, most observations are not missing more than 2-3 values. 
+
+
+```
+
+```{r eval = FALSE}
+row.plot <- rp_impute %>%
+  select(-year.f) %>%
+  mutate(id = row_number()) %>%
+  gather(-id, key = "key", value = "val") %>%
+  mutate(isna = is.na(val)) %>%
+  ggplot(aes(key, id, fill = isna)) +
+    geom_raster(alpha=0.8) +
+    scale_fill_manual(name = "",
+        values = c('blue', 'red'),
+        labels = c("Present", "Missing")) +
+    #scale_x_discrete(limits = levels) +
+    labs(x = "Variable",
+           y = "Observation Number", 
+         title = "Missing values in rows") +
+    coord_flip() +
+  theme_bw()
+
+row.plot
+
+glimpse(rp_impute)
+```
+
+
+```{r eval = FALSE}
+
+# select all variables with missing values for the aggr plot
+
+row.plot <- fin_imp %>%
+  mutate(id = row_number()) %>%
+  gather(-id, key = "key", value = "val") %>%
+  mutate(isna = is.na(val)) %>%
+  ggplot(aes(key, id, fill = isna)) +
+    geom_raster(alpha=0.8) +
+    scale_fill_manual(name = "",
+        values = c('blue', 'red'),
+        labels = c("Present", "Missing")) +
+    #scale_x_discrete(limits = levels) +
+    labs(x = "Variable",
+           y = "Observation Number", 
+         title = "Missing values in rows") +
+    coord_flip() +
+  theme_bw()
+
+row.plot
+
+
+
+
+
+```
 
 
 # Appendix
 
-```{r include = FALSE}
+```{r  include = FALSE}
 
 ## regression 1 Table 1
 
@@ -237,6 +336,7 @@ t1 <- stargazer(m1, m2, m3, omit = c("year", "south", "midwest", "west"),
                 dep.var.labels = c("Racial Divide"),
                 column.labels = c("Multigroup H Index", "White/Nonwhite H Index", "Ideology Controls"),
                 notes = "This table displays the results of the replication\neffort of the analyses conducted in Trounstine (2016) using the racial polarization dataset.\nThe replication code can be found on my personal Github repository, which is linked in the introduction. The original table is displayed for comparison as Figure 1.)",
+                table.placement = "H",
                 notes.align = "l")
 
 # note: "This table displays the results of the replication effort of the analyses conducted in Trounstine (2016) using the racial polarization dataset. The replication code can be found on my personal [Github repository](https://github.com/mburzillo/new_final_project). The original table is displayed for comparison as Figure 1.")
@@ -315,8 +415,9 @@ felm3 <- felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopint
 
 table2 <- stargazer(felm1, felm2, felm3, omit = c("year", "south", "midwest", "west"), 
                     header = FALSE,
-                    title = "\textbf{Effect of Segregation on Overall per Capita City Expenditures}",
-                    covariate.labels = c("White/Nonwhite H Index", "Diversity", "Percent Black", "Percent Asian", "Percent Latino", "Change Percent Black", "Change Percent Latino", "Change Percent Asian", "Medain HH Income (1000s)", "Percent Government Worker", "Percent Renters", "Percent 65+", "Percent College Degree", "Population (logged)", "White Ideology", "Constant"))
+                    title = "\\textbf{Effect of Segregation on Overall per Capita City Expenditures}",
+                    covariate.labels = c("White/Nonwhite H Index", "Diversity", "Percent Black", "Percent Asian", "Percent Latino", "Change Percent Black", "Change Percent Latino", "Change Percent Asian", "Medain HH Income (1000s)", "Percent Government Worker", "Percent Renters", "Percent 65+", "Percent College Degree", "Population (logged)", "White Ideology", "Constant"),
+                    table.placement = "H")
 
 ```
 
