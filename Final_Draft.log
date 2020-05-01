@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  30 APR 2020 16:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  30 APR 2020 19:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1138,14 +1138,14 @@ LaTeX Font Info:    Try loading font information for T1+lmtt on input line 377.
 (/usr/local/texlive/2017/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-<Final_Draft_files/figure-latex/rp_aggr_plot-1.pdf, id=65, 445.665pt x 298.1137
+<Final_Draft_files/figure-latex/rp_aggr_plot-1.pdf, id=65, 415.5525pt x 351.312
 5pt>
 File: Final_Draft_files/figure-latex/rp_aggr_plot-1.pdf Graphic file (type pdf)
 
 <use Final_Draft_files/figure-latex/rp_aggr_plot-1.pdf>
 Package pdftex.def Info: Final_Draft_files/figure-latex/rp_aggr_plot-1.pdf used
  on input line 388.
-(pdftex.def)             Requested size: 445.6707pt x 298.11757pt.
+(pdftex.def)             Requested size: 415.5705pt x 351.3277pt.
 [4 <./Final_Draft_files/figure-latex/rp_missing_plot-1.pdf>]
 
 Package xcolor Warning: Incompatible color definition on input line 407.
@@ -1162,10 +1162,6 @@ Package xcolor Warning: Incompatible color definition on input line 430.
 
 
 Package xcolor Warning: Incompatible color definition on input line 430.
-
-
-Underfull \vbox (badness 1320) detected at line 430
- []
 
 
 Package xcolor Warning: Incompatible color definition on input line 430.
@@ -1257,7 +1253,7 @@ l/texlive/2017/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/
 dist/fonts/type1/public/lm/lmtk10.pfb></usr/local/texlive/2017/texmf-dist/fonts
 /type1/public/lm/lmtt10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/pub
 lic/lm/lmtti10.pfb>
-Output written on Final_Draft.pdf (10 pages, 626750 bytes).
+Output written on Final_Draft.pdf (10 pages, 626703 bytes).
 PDF statistics:
  222 PDF objects out of 1000 (max. 8388607)
  185 compressed objects within 2 object streams
