@@ -287,6 +287,8 @@ rp_aggr <- rp_impute %>%
 # create an aggr plot for the missing values
 
 aggr(rp_aggr, bars = TRUE, col=c('navyblue','red'), numbers=TRUE, cex.axis=.5, gap=1, ylab=c("Proporiton of Missing Values","Combinations"))
+title(main = "Patterns of Missingness in the Racial Polarization Data",
+      sub = "", font.main = 1, font.axis = 1, cex.main = .75)
 
 
 # caption for this plot when I figure out how to do it... : This plot examines the pattern of missing data in the the original racial polarization dataset from Trounstine (2016). The plot on the left shows the percentage of missing data for each variable with missing data and reveals that the variables that are missing by far the most data are the largest vote split along racial lines (biggestsplit) and the variable indicating whether or not the election had candidates of more than one race (biracial). The plot on the right shows the pattern of missingness among the variables. We can see that approximately 42% of observations are complete (have no missing values). There seems to be a correspondence between missing a value for biggest split and missing biracial. There also seem to be about 2% of values for which most of the variables are missing. However, most observations are not missing more than 2-3 values. 
@@ -294,15 +296,62 @@ aggr(rp_aggr, bars = TRUE, col=c('navyblue','red'), numbers=TRUE, cex.axis=.5, g
 ```
 
 
-In figure X2, we can similarly observe the trends for the financial segregation dataset. In this dataset, there is a very high proportion of missing variables for a number of variables. For example, there are `r sum(is.na(fin_imp$H_citytract_NHW_i))` missing values for the segregation index, which is the main independent variable, or %`r round(sum(is.na(fin_imp$H_citytract_NHW_i))/nrow(fin_imp)*100,2)` of the data. In this dataset, there are also many more observations for which values are missing for multiple variables in comparison to the racial polarization dataset. In total, a mere %`r .0058*100` of observations are complete for all variables included in the main specification for the financial segregaion dataset. 
+```{r eval = FALSE}
+row.plot <- rp_impute %>%
+  select(-year.f) %>%
+  mutate(id = row_number()) %>%
+  gather(-id, key = "key", value = "val") %>%
+  mutate(isna = is.na(val)) %>%
+  ggplot(aes(key, id, fill = isna)) +
+    geom_raster(alpha=0.8) +
+    scale_fill_manual(name = "",
+        values = c('blue', 'red'),
+        labels = c("Present", "Missing")) +
+    #scale_x_discrete(limits = levels) +
+    labs(x = "Variable",
+           y = "Observation Number", 
+         title = "Missing values in rows") +
+    coord_flip() +
+  theme_bw()
 
-```{r fin_missing_plot, include = FALSE}
+row.plot
 
-miss_var_summary(fin_imp)
+glimpse(rp_impute)
+```
 
-gg_miss_var(fin_imp, show_pct = TRUE)
+
+```{r eval = FALSE}
+
+# select all variables with missing values for the aggr plot
+
+row.plot <- fin_imp %>%
+  mutate(id = row_number()) %>%
+  gather(-id, key = "key", value = "val") %>%
+  mutate(isna = is.na(val)) %>%
+  ggplot(aes(key, id, fill = isna)) +
+    geom_raster(alpha=0.8) +
+    scale_fill_manual(name = "",
+        values = c('blue', 'red'),
+        labels = c("Present", "Missing")) +
+    #scale_x_discrete(limits = levels) +
+    labs(x = "Variable",
+           y = "Observation Number", 
+         title = "Missing values in rows") +
+    coord_flip() +
+  theme_bw()
+
+row.plot
+
+
+
+
 
 ```
+
+
+
+In figure X2, we can similarly observe the trends for the financial segregation dataset. In this dataset, there is a very high proportion of missing variables for a number of variables. For example, there are `r sum(is.na(fin_imp$H_citytract_NHW_i))` missing values for the segregation index, which is the main independent variable, or %`r round(sum(is.na(fin_imp$H_citytract_NHW_i))/nrow(fin_imp)*100,2)` of the data. In this dataset, there are also many more observations for which values are missing for multiple variables in comparison to the racial polarization dataset. In total, a mere %`r .0058*100` of observations are complete for all variables included in the main specification for the financial segregaion dataset. 
+
 
 ```{r fin_aggr_plot, echo = FALSE}
 
@@ -323,7 +372,7 @@ aggr(new_try, plot = TRUE, bars = FALSE, col=c('navyblue','red'), numbers=TRUE)
 
 aggr(fin_imp_aggr, plot = TRUE, bars = TRUE, col=c('navyblue','red'), numbers= FALSE, cex.axis=.5, gap=2, ylab=c("Proporiton of Missing Values","Combinations"))
 title(main = "Patterns of Missingness in the Financial Segregation Data",
-      sub = "")
+      sub = "", font.main = 1, font.axis = 1, cex.main = .75)
 
 # this plot tells us that only .58% of the data are complete (not missing anything)
 

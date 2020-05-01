@@ -4,11 +4,10 @@ author: "Maria Burzillo"
 date: "5/8/2020"
 output: 
   pdf_document:
-    fig_caption: yes
+    fig_caption: true
 bibliography: final_proj_bib.bib
 #biblio-style: "apalike"
 link_citations: true
-keep_tex: yes
 header_includes: \usepackage{float}
   
 ---
@@ -189,30 +188,8 @@ In an attempt to better deal with the problem of missing data in @trounstine_seg
 
 Before performing the multiple imputations on the datasets, I first examined the missing data for patterns. To better understand any potential patterns in missing data, I plotted the pattern of missingness and created a histogram showing the frequency of missing values for those variables with missing values in figure X1 for the racial polarization data and figure X2 for the financial segregation data. Looking at figure X1, the histogram shows that the variables for the largest vote split along racial lines and the variable indicating whether or not the election had candidates of more than one race had by far the largest percentages of missing data, missing %`r round(sum(is.na(rp_impute$biggestsplit))/nrow(rp_impute)*100,2)` and  %`r round(sum(is.na(rp_impute$biracial))/nrow(rp_impute)*100,2)`, respectively. It is important to note that the variable for the largest vote split along racial lines is the dependent variable in the regresison analysis, and thus, we are missing a large percentage of this key variable. From the plot on the right, we can see that approximately 42% of observations are complete (have no missing values). There seem to be a correspondence between missing a value for the largest vote split and missing a value for the biracial election indicator. There also seem to be about 2% of values for wich most of the variables are missing. However, most observations are not missing more than 2-3 values. 
 
-```{r rp_missing_plot, echo = FALSE, warning = FALSE}
 
-# don't show the warning, it's just an irrelevant column missing a name
-
-# plot the missing variables if desired
-
-rp_facet <- rp_impute %>%
-   select("medincinterp",
-             "biggestsplit", "diversityinterp",
-             "pctasianpopinterp", "pctblkpopinterp", "pctlatinopopinterp",
-             "pctrentersinterp", "pctcollegegradinterp", "biracial", "nonpartisan",
-               "south", "midwest", "west", "whiteideology_fill2", "year")
-
-gg_miss_var(rp_impute, show_pct = TRUE) +
-  ggtitle("% Missing Values in Trounstine (2016)'s Racial\nPolarization Dataset") +
-  labs(caption = ",jweh,rbguywaflkwanejkfhbwa,keifjlqwibfkjqwhbsfjkhwbsdwhqefhgwef") +
-  theme(plot.caption = element_text(hjust = 0))
-
-nrow(rp_impute)
-
-
-```
-
-```{r rp_aggr_plot, echo = FALSE, fig.cap = "This plot examines the pattern of missing data in the the original racial polarization dataset from Trounstine (2016). The plot on the left shows the percentage of missing data for each variable with missing data and reveals that the variables that are missing by far the most data are the largest vote split along racial lines (biggestsplit) and the variable indicating whether or not the election had candidates of more than one race (biracial). The plot on the right shows the pattern of missingness among the variables. We can see that approximately 42% of observations are complete (have no missing values). There seems to be a correspondence between missing a value for biggest split and missing biracial. There also seem to be about 2% of values for which most of the variables are missing. However, most observations are not missing more than 2-3 values.", fig.width= 6, fig.height = 5}
+```{r rp_aggr_plot, echo = FALSE, fig.cap = "This plot examines the pattern of missing data in the the original racial polarization dataset from Trounstine (2016). The plot on the left shows the percentage of missing data for each variable with missing data and reveals that the variables that are missing by far the most data are the largest vote split along racial lines (biggestsplit) and the variable indicating whether or not the election had candidates of more than one race (biracial). The plot on the right shows the pattern of missingness among the variables. We can see that approximately 42\\% of observations are complete (have no missing values). There seems to be a correspondence between missing a value for biggest split and missing biracial. There also seem to be about 2\\% of values for which most of the variables are missing. However, most observations are not missing more than 2-3 values.", fig.width= 6, fig.height = 5, warning = F, fig.pos="H"}
 
 # select only the missing values
 
@@ -224,67 +201,45 @@ rp_aggr <- rp_impute %>%
                "south", "midwest", "west")
 
 # create an aggr plot for the missing values
-aggr(rp_aggr, bars = TRUE, combined = T, col=c('navyblue','red'), numbers=TRUE, cex.axis=.5, gap=1, ylab=c("Proporiton of Missing Values","Combinations"))
+par(font = 1)
+aggr(rp_aggr, bars = TRUE,  col=c('navyblue','red'), numbers=TRUE, cex.axis=.5, gap=1, ylab=c("Proporiton of Missing Values","Combinations"))
 title(main = "Patterns of Missingness in the Financial Segregation Data",
-      sub = "", line = 3, oma = c(1,3,5,1))
-
-
-# caption for this plot when I figure out how to do it... : This plot examines the pattern of missing data in the the original racial polarization dataset from Trounstine (2016). The plot on the left shows the percentage of missing data for each variable with missing data and reveals that the variables that are missing by far the most data are the largest vote split along racial lines (biggestsplit) and the variable indicating whether or not the election had candidates of more than one race (biracial). The plot on the right shows the pattern of missingness among the variables. We can see that approximately 42% of observations are complete (have no missing values). There seems to be a correspondence between missing a value for biggest split and missing biracial. There also seem to be about 2% of values for which most of the variables are missing. However, most observations are not missing more than 2-3 values. 
-
+      sub = "", line = 3, oma = c(1,3,5,1), cex.axis = .5, font.main = 1, font.axis = 1, cex.main = 1, cex.lab = .75)
 
 ```
 
-```{r eval = FALSE}
-row.plot <- rp_impute %>%
-  select(-year.f) %>%
-  mutate(id = row_number()) %>%
-  gather(-id, key = "key", value = "val") %>%
-  mutate(isna = is.na(val)) %>%
-  ggplot(aes(key, id, fill = isna)) +
-    geom_raster(alpha=0.8) +
-    scale_fill_manual(name = "",
-        values = c('blue', 'red'),
-        labels = c("Present", "Missing")) +
-    #scale_x_discrete(limits = levels) +
-    labs(x = "Variable",
-           y = "Observation Number", 
-         title = "Missing values in rows") +
-    coord_flip() +
-  theme_bw()
 
-row.plot
-
-glimpse(rp_impute)
-```
+In figure X2, we can similarly observe the trends for the financial segregation dataset. In this dataset, there is a very high proportion of missing variables for a number of variables. For example, there are `r sum(is.na(fin_imp$H_citytract_NHW_i))` missing values for the segregation index, which is the main independent variable, or %`r round(sum(is.na(fin_imp$H_citytract_NHW_i))/nrow(fin_imp)*100,2)` of the data. In this dataset, there are also many more observations for which values are missing for multiple variables in comparison to the racial polarization dataset. In total, a mere %`r .0058*100` of observations are complete for all variables included in the main specification for the financial segregaion dataset. 
 
 
-```{r eval = FALSE}
+```{r fin_aggr_plot, echo = FALSE, fig.cap = "This plot examines the pattern of missing data in the the original financial segregation dataset from Trounstine (2016). The plot on the left shows the percentage of missing data for each variable with missing data and reveals that a large number of variables are missing the vast majority of data. The plot on the right shows the pattern of missingness among the variables. We can see that only .58\\% of observations are complete (have no missing values), and a large majority of the observations are missing data for many variables.", fig.width= 6, fig.height = 5, fig.pos="H"}
 
 # select all variables with missing values for the aggr plot
 
-row.plot <- fin_imp %>%
-  mutate(id = row_number()) %>%
-  gather(-id, key = "key", value = "val") %>%
-  mutate(isna = is.na(val)) %>%
-  ggplot(aes(key, id, fill = isna)) +
-    geom_raster(alpha=0.8) +
-    scale_fill_manual(name = "",
-        values = c('blue', 'red'),
-        labels = c("Present", "Missing")) +
-    #scale_x_discrete(limits = levels) +
-    labs(x = "Variable",
-           y = "Observation Number", 
-         title = "Missing values in rows") +
-    coord_flip() +
-  theme_bw()
-
-row.plot
+fin_imp_aggr <- fin_imp %>%
+  select(ideology_fill, H_citytract_NHW_i, chng5pctblk, chng5pctlatino, 
+         chng5pctasian, diversityinterp, pctblkpopinterp, pctasianpopinterp,
+         pctlatinopopinterp, medinc_cpi, pctlocalgovworker_100, pctrentersinterp,
+         pctover65, pctcollegegradinterp)
 
 
+new_try <- head(fin_imp_aggr, 20)
 
+# create the aggr plot
+
+aggr(fin_imp_aggr, plot = TRUE, bars = TRUE, col=c('navyblue','red'), numbers= FALSE, cex.axis=.5, gap=2, ylab=c("Proporiton of Missing Values","Combinations"))
+title(main = "Patterns of Missingness in the Financial Segregation Data",
+      sub = "", font.main = 1, font.axis = 1, cex.main = 1, line = 3,  oma = c(1,3,5,1), font.main = 1, font.axis = 1)
+
+# this plot tells us that only .58% of the data are complete (not missing anything)
 
 
 ```
+
+Because neither dataset seems to exhibit any clear patterns in the missing, data, it makes sense to proceed with the imputation. For the racial polarization dataset, I performed multiple imputations with 20 iterations using mice, while for the financial segregation dataset, I performed only 5 iterations due to the large size of the dataset and computing limitaitons. A non-stochastic imputation method, Classification and Regression Trees (CART), was used instead of the default for the imputation for both datasets because of an error with matrix inversion caused by the data that prevented the use of the default method, predictive mean matching. For the racial polarization dataset, I included all of the variables used in the analysis associated with the dataset and was able to impute all missing values. For the financial segregation dataset, however, I only imputed values for the main independent variable, the segregation index, and a few other variables, although all variables used in the analysis were included in the data subset input into the mice function. More of the data could not be imputed from the financial segregation dataset due to computing and time constraints for this project given the dataset's large size and high proportion of missing values. 
+
+
+
 
 
 # Appendix
