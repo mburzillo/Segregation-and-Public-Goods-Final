@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  1 MAY 2020 15:16
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  1 MAY 2020 15:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**Final_Draft.tex
-(./Final_Draft.tex
+**draft_v_4_30.tex
+(./draft_v_4_30.tex
 LaTeX2e <2017-04-15>
 Babel <3.10> and hyphenation patterns for 84 language(s) loaded.
 (/usr/local/texlive/2017/texmf-dist/tex/latex/base/article.cls
@@ -934,12 +934,12 @@ Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
 Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
-) (./Final_Draft.aux
+) (./draft_v_4_30.aux
 
 LaTeX Warning: Label `' multiply defined.
 
 )
-\openout1 = `Final_Draft.aux'.
+\openout1 = `draft_v_4_30.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 86.
 LaTeX Font Info:    ... okay on input line 86.
@@ -993,9 +993,9 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 86.
 LaTeX Info: Redefining \pageref on input line 86.
 LaTeX Info: Redefining \nameref on input line 86.
-(./Final_Draft.out) (./Final_Draft.out)
+(./draft_v_4_30.out) (./draft_v_4_30.out)
 \@outlinefile=\write3
-\openout3 = `Final_Draft.out'.
+\openout3 = `draft_v_4_30.out'.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1104,32 +1104,41 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 [1
 
 {/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 335.
 
-<Final_Draft_files/figure-latex/rp_aggr_plot-1.pdf, id=64, 423.5825pt x 350.308
-75pt>
-File: Final_Draft_files/figure-latex/rp_aggr_plot-1.pdf Graphic file (type pdf)
-
-<use Final_Draft_files/figure-latex/rp_aggr_plot-1.pdf>
-Package pdftex.def Info: Final_Draft_files/figure-latex/rp_aggr_plot-1.pdf used
- on input line 337.
-(pdftex.def)             Requested size: 423.59439pt x 350.31857pt.
-[4]
-<Final_Draft_files/figure-latex/fin_aggr_plot-1.pdf, id=69, 409.53pt x 350.3087
-5pt>
-File: Final_Draft_files/figure-latex/fin_aggr_plot-1.pdf Graphic file (type pdf
+(/usr/local/texlive/2017/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-<use Final_Draft_files/figure-latex/fin_aggr_plot-1.pdf>
-Package pdftex.def Info: Final_Draft_files/figure-latex/fin_aggr_plot-1.pdf use
+LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 352
+.
+(/usr/local/texlive/2017/texmf-dist/tex/latex/lm/ts1lmtt.fd
+File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+<draft_v_4_30_files/figure-latex/rp_aggr_plot-1.pdf, id=64, 423.5825pt x 347.29
+75pt>
+File: draft_v_4_30_files/figure-latex/rp_aggr_plot-1.pdf Graphic file (type pdf
+)
+<use draft_v_4_30_files/figure-latex/rp_aggr_plot-1.pdf>
+Package pdftex.def Info: draft_v_4_30_files/figure-latex/rp_aggr_plot-1.pdf use
 d on input line 356.
-(pdftex.def)             Requested size: 409.55399pt x 350.32927pt.
+(pdftex.def)             Requested size: 423.59439pt x 347.30724pt.
+[4]
+<draft_v_4_30_files/figure-latex/fin_aggr_plot-1.pdf, id=71, 481.8pt x 354.3237
+5pt>
+File: draft_v_4_30_files/figure-latex/fin_aggr_plot-1.pdf Graphic file (type pd
+f)
+<use draft_v_4_30_files/figure-latex/fin_aggr_plot-1.pdf>
+Package pdftex.def Info: draft_v_4_30_files/figure-latex/fin_aggr_plot-1.pdf us
+ed on input line 375.
+(pdftex.def)             Requested size: 469.77148pt x 345.47777pt.
 [5pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.362 
-       <./Final_Draft_files/figure-latex/rp_aggr_plot-1.pdf>]
-Overfull \hbox (1010.98091pt too wide) in paragraph at lines 389--437
+l.381 
+       <./draft_v_4_30_files/figure-latex/rp_aggr_plot-1.pdf>]
+Overfull \hbox (1010.98091pt too wide) in paragraph at lines 408--456
  [][] 
  []
 
@@ -1138,25 +1147,25 @@ has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.438 
-       <./Final_Draft_files/figure-latex/fin_aggr_plot-1.pdf>] <table_1.png, id
-=95, 608.2725pt x 411.5375pt>
+l.457 
+       <./draft_v_4_30_files/figure-latex/fin_aggr_plot-1.pdf>] <table_1.png, i
+d=97, 608.2725pt x 411.5375pt>
 File: table_1.png Graphic file (type png)
 <use table_1.png>
-Package pdftex.def Info: table_1.png used on input line 441.
+Package pdftex.def Info: table_1.png used on input line 460.
 (pdftex.def)             Requested size: 469.7635pt x 317.82678pt.
 [7pdfTeX warning (ext4): destination with the same identifier (name{table.1}) h
 as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.514 
+l.533 
       ] [8pdfTeX warning (ext4): destination with the same identifier (name{fig
 ure.3}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.514 
+l.533 
        <./table_1.png>]
 Overfull \vbox (41.65561pt too high) has occurred while \output is active []
 
@@ -1165,52 +1174,54 @@ as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.514 
+l.533 
       ]
-Overfull \hbox (0.54793pt too wide) in paragraph at lines 586--591
+Overfull \hbox (0.54793pt too wide) in paragraph at lines 605--610
 [][]\T1/lmr/m/n/10 (-20) ---------. 2016. ``Segregation and Inequality in Publi
 c Goods: SEGREGATION AND INEQUALITY IN PUBLIC
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 598.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 617.
 [10]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 598.
-(./Final_Draft.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 598.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 598.
-Package rerunfilecheck Info: File `Final_Draft.out' has not changed.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 617.
+(./draft_v_4_30.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 617.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 617.
+Package rerunfilecheck Info: File `draft_v_4_30.out' has not changed.
 (rerunfilecheck)             Checksum: DB9FAD519AB8D74DF9B8A4D6FDF4FB83;696.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 598.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 617.
  ) 
 Here is how much of TeX's memory you used:
- 14285 strings out of 492995
- 205006 string characters out of 6132704
- 341116 words of memory out of 5000000
- 17468 multiletter control sequences out of 15000+600000
- 64059 words of font info for 103 fonts, out of 8000000 for 9000
+ 14364 strings out of 492995
+ 206344 string characters out of 6132704
+ 341121 words of memory out of 5000000
+ 17538 multiletter control sequences out of 15000+600000
+ 64683 words of font info for 105 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,11n,38p,990b,347s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 34i,11n,38p,991b,347s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/lo
 cal/texlive/2017/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive/20
-17/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2017/texmf-dist/
-fonts/enc/dvips/lm/lm-mathit.enc}</usr/local/texlive/2017/texmf-dist/fonts/type
-1/public/lm/lmbx10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/l
-m/lmbx12.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmmi10.p
-fb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/lo
-cal/texlive/2017/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive
-/2017/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2017/texmf
--dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive/2017/texmf-dist/fonts/
-type1/public/lm/lmr7.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public
-/lm/lmr8.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmri10.p
-fb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/l
-ocal/texlive/2017/texmf-dist/fonts/type1/public/lm/lmsy7.pfb>
-Output written on Final_Draft.pdf (10 pages, 557912 bytes).
+17/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/local/texlive/2017/texmf-dist
+/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvi
+ps/lm/lm-mathit.enc}</usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/l
+mbx10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmbx12.pfb>
+</usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/loca
+l/texlive/2017/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2
+017/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2017/texmf-d
+ist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2017/texmf-dist/fonts/t
+ype1/public/lm/lmr6.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/
+lm/lmr7.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmr8.pfb>
+</usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/loca
+l/texlive/2017/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/
+2017/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2017/texmf-
+dist/fonts/type1/public/lm/lmtt10.pfb>
+Output written on draft_v_4_30.pdf (10 pages, 587417 bytes).
 PDF statistics:
- 210 PDF objects out of 1000 (max. 8388607)
- 176 compressed objects within 2 object streams
+ 217 PDF objects out of 1000 (max. 8388607)
+ 182 compressed objects within 2 object streams
  46 named destinations out of 1000 (max. 500000)
  14408 words of extra memory for PDF output out of 17280 (max. 10000000)
 
