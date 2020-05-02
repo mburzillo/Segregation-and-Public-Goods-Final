@@ -267,7 +267,7 @@ imp_1_rp <- mice(rp_impute, method = "cart", maxit = 20)
 
 ```
 
-```{r fp_imputations_original, eval = FALSE, include = FALSE}
+```{r fp_imputations_original, include = FALSE, eval = FALSE}
 
 # perform multiple imputations. We have the same issue here with the default method as with the previous dataset so we use CART. Additionally, because of the extremely large size of this dataset, we choose to only impute the variable H_citytract_NHW_i, as it is the most frequently missing variable and also out main independent variable. Just imputing this allows us to include way more observations in the regression than the original data despite the still large number of NAs overall. One concern here would be that if there was some reason that this variable was missing rather than other variables that only imputing this variable could lead to some bias in the results.  
 
@@ -397,14 +397,11 @@ imp_1_rp_sum_table_vars <- tibble(
   `P-Value` = round(imp_1_rp_sum_table$p.value, 3)
   )
 
-stargazer(imp_1_rp_sum_table,
-          header = FALSE,
-          title = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Multigroup Segregation Index}")
-
 kable(imp_1_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Multigroup Segregation Index}", booktabs = T) %>%
   row_spec(0, bold = TRUE) %>%
-  footnote(general = "this is my second caption to see if this works and how i will need to deal with newjhfhfjhbcjhwbrjfnwmfnirfjnwmfwkfnj wfjwjenfkwejwefhwefb",
-           general_title = "Table 1:")
+  footnote(general = c("This table shows the results of Trounstine's first model for the effect of segregation on political polarization (racial vote divide) using the multi-group Theil's H segregation Index using the new, multiply imputed datasets. The sign of the coefficient on the main variable of interest, the segregation index, is the same, but the result has become statisically insignificant with the 95% confidence interval containing zero. Thus while these results still suggest that segregation may be associated with increased political polarization, they confer a lesser degree of certainty than Trounstine's original analysis. The coefficients for % Black population, % Latino population, and median household income have also switched signs. The coefficient on the indicator for a primary election, has also changed from being significant in the original analysis to insignificant here. In general, the standard errors on the coefficients have decreased slightly."),
+           general_title = "Table 1:")%>%
+  kable_styling(full_width = TRUE)
 
 ```
 
@@ -418,9 +415,19 @@ imp_2_rp_sum_table <- as.data.frame(imp_2_rp_sum) %>%
   select(term, estimate, std.error, p.value) %>%
   head(13)
 
-stargazer(imp_2_rp_sum_table,
-          header = FALSE,
-          title = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Two-Group Segregation Index}")
+imp_2_rp_sum_table_vars <- tibble(
+  Variable = c("Intercept", "White/Nonwhite Seg. Index", "Diversity", "% Asian", "% Black", "% Latino",
+               "Median Income (1000s)", "% Renters", "% College Grads", "Biracial Elec.", "Nonpartisan Elec.", "Primary Elec.", "Pop (logged)"),
+  Estimate = round(imp_2_rp_sum_table$estimate, 3),
+  `Std. Error` = round(imp_2_rp_sum_table$std.error,3),
+  `P-Value` = round(imp_2_rp_sum_table$p.value, 3)
+  )
+
+kable(imp_2_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Two-Group Segregation Index}", booktabs = T) %>%
+  row_spec(0, bold = TRUE) %>%
+  footnote(general = c("This table shows the results of Trounstine's second model for the effect of segregation on political polarization (racial vote divide) using the two-group Theil's H segregation Index using the new, multiply imputed datasets. Compared to Trounstine's original results, the main coefficient on segregation index has decreased in magnitude, although, it remains statistically significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Latino, and Median Income have switched signs. Standard errors have also reduced slightly in these specifications compared to the original analysis in Trounstine (2016)."),
+           general_title = "Table 2:") %>%
+  kable_styling(full_width = TRUE)
 
 ```
 
@@ -432,9 +439,20 @@ imp_3_rp_sum_table <- as.data.frame(imp_3_rp_sum) %>%
   select(term, estimate, std.error, p.value) %>%
   head(13)
 
-stargazer(imp_3_rp_sum_table,
-          header = FALSE,
-          title = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Ideology Control}")
+imp_3_rp_sum_table_vars <- tibble(
+  Variable = c("Intercept", "White/Nonwhite Seg. Index", "Diversity", "% Asian", "% Black", "% Latino",
+               "Median Income (1000s)", "% Renters", "% College Grads", "Biracial Elec.", "Nonpartisan Elec.", "Primary Elec.", "Pop (logged)"),
+  Estimate = round(imp_3_rp_sum_table$estimate, 3),
+  `Std. Error` = round(imp_3_rp_sum_table$std.error,3),
+  `P-Value` = round(imp_3_rp_sum_table$p.value, 3)
+  )
+
+kable(imp_3_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Ideology Control}", booktabs = T) %>%
+  row_spec(0, bold = TRUE) %>%
+  footnote(general = c("This table shows the results of Trounstine's third model for the effect of segregation on political polarization (racial vote divide) using the two-group Theil's H segregation Index and including controls for ideology using the new, multiply imputed datasets. Compared to Trounstine's original results, the main coefficient on segregation index has decreased in magnitude, although, it remains statistically significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Asian and Black have switched signs. Standard errors have also reduced slightly in these specifications compared to the original analysis in Trounstine (2016).""),
+           general_title = "Table 3:") %>%
+  kable_styling(full_width = TRUE)
+
 ```
 
 
