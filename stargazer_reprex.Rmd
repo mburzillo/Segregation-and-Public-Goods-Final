@@ -2,7 +2,7 @@
 title: "Title"
 author: "Author"
 output: 
-  pdf_document:
+  bookdown::pdf_document2:
     fig_caption: yes
     extra_dependencies: ["rotating"]
 header_includes:
@@ -17,11 +17,23 @@ knitr::opts_chunk$set(echo = TRUE, fig.align = "center", fig.position = "!H")
 library(tidyverse)
 library(stargazer)
 library(reprex)
+library(kableExtra)
+library(huxtable)
+```
+
+# Simple Plot
+
+```{r fig.cap= "this is a caption", echo = FALSE}
+mtcars %>%
+  ggplot(aes(x = disp, y = mpg )) +
+  geom_point()
+
 ```
 
 
+# Stargazer
 
-```{r results = "asis", echo = FALSE}
+```{r results = "asis", echo = FALSE, fig.cap= "this is my captions"}
 
 library(tidyverse)
 library(stargazer)
@@ -32,11 +44,17 @@ output2 <- lm(mpg ~ cyl + disp + wt + drat, data = mtcars)
 t1 <- stargazer(output, output2, 
                 header = FALSE,
                 title = "\\textbf{Practice Table}",
-                notes = "Notes Could Go Here???????????? This is an example. Notes Could Go Here???????????? This is an example. Notes Could Go Here???????????? This is an example. Notes Could Go Here???????????? This is an example. ",
+                notes = c("Notes Could Go Here????????????", "This is an example. Notes Could Go Here???????????? This is an example.", "Notes Could Go Here???????????? This is an example.", "Notes Could Go Here???????????? This is an example. "),
                 notes.align = "l",
+                notes.append = F,
                 float = FALSE,
+                style = "apsr",
                 table.placement = "H")
 
 ```
 
+
+```{r fig.cap="this is my caption", echo = FALSE, warning=FALSE}
+huxreg(output, output2)
+```
 

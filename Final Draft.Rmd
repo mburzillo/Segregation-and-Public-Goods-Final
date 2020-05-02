@@ -8,7 +8,9 @@ output:
 bibliography: final_proj_bib.bib
 #biblio-style: "apalike"
 link_citations: true
-header_includes: \usepackage{float}
+header_includes: 
+  \usepackage{float}
+  \usepackage{multirow}
   
 ---
 
@@ -16,31 +18,22 @@ header_includes: \usepackage{float}
 
 @trounstine_segregation_2016 suggests that high levels of residential segregation are associated with increased political polarization and decreased public spending. In this analysis, I was able to successfully replicate @trounstine_segregation_2016’s main results. I then attempted to better deal with the large amounts of missing data in the datasets used in the original analysis by multiply imputing missing values using the mice() package and then by re-running the original models using the multiply imputed datasets. My results suggest that segregation is associated with increased racial political polarization, although maybe not as strongly as Trounstine (2016) originally suggested. Furthermore, I find that Trounstine (2016)'s conclusion that increases in segregation are associated with decreases in public spending holds for large cities, but that diversity is a better explanatory factor for small cities. 
 
+\newpage
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 knitr::write_bib(c("knitr", "stringr"), "bib.bib", width = 60)
 library(haven)
-library(gtable)
 library(stargazer)
 library(tidyverse)
-library(gt)
 library(gtsummary)
 library(knitr)
+library(AER)
 library(lme4)
 library(margins)
-library(reprex)
-library(plm)
-library(devtools)
 library(lfe)
-library(Statamarkdown)
 library(readxl)
-library(starpolishr)
-library(AER)
-library(readxl)
-library(naniar)
 library(mice)
-library(gtsummary)
 library(VIM)
 library(kableExtra)
 ```
@@ -198,7 +191,16 @@ rp_aggr <- rp_impute %>%
             "diversityinterp",
              "pctasianpopinterp", "pctblkpopinterp", "pctlatinopopinterp",
              "pctrentersinterp", "pctcollegegradinterp", "nonpartisan",
-               "south", "midwest", "west")
+               "south", "midwest", "west") %>%
+  rename("Racial Divide" = biggestsplit, "Biracial Contest" = biracial, 
+         "White Ideology" = whiteideology_fill2, "Median HH Income" = medincinterp,
+         "Diversity" = diversityinterp, "% Asian" = pctasianpopinterp, 
+         "% Black" = pctblkpopinterp, "% Latino" = pctlatinopopinterp,
+         "% Renters" = pctrentersinterp, "% College Grads" = pctcollegegradinterp,
+         "Nonpartisan Elect." = nonpartisan, "South" = south, "Midwest" = midwest,
+         "West" = "west")
+
+
 
 # create an aggr plot for the missing values
 par(font = 1)
@@ -212,7 +214,7 @@ title(main = "Patterns of Missingness in the Financial Segregation Data",
 In figure X2, we can similarly observe the trends for the financial segregation dataset. In this dataset, there is a very high proportion of missing variables for a number of variables. For example, there are `r sum(is.na(fin_imp$H_citytract_NHW_i))` missing values for the segregation index, which is the main independent variable, or %`r round(sum(is.na(fin_imp$H_citytract_NHW_i))/nrow(fin_imp)*100,2)` of the data. In this dataset, there are also many more observations for which values are missing for multiple variables in comparison to the racial polarization dataset. In total, a mere %`r .0058*100` of observations are complete for all variables included in the main specification for the financial segregaion dataset. 
 
 
-```{r fin_aggr_plot, echo = FALSE, fig.cap = "This plot examines the pattern of missing data in the the original financial segregation dataset from Trounstine (2016). The plot on the left shows the percentage of missing data for each variable with missing data and reveals that a large number of variables are missing the vast majority of data. The plot on the right shows the pattern of missingness among the variables. We can see that only .58\\% of observations are complete (have no missing values), and a large majority of the observations are missing data for many variables.", fig.width= 6, fig.height = 5, fig.pos="H"}
+```{r fin_aggr_plot, echo = FALSE, fig.cap = "This plot examines the pattern of missing data in the the original financial segregation dataset from Trounstine (2016). The plot on the left shows the percentage of missing data for each variable with missing data and reveals that a large number of variables are missing the vast majority of data. The plot on the right shows the pattern of missingness among the variables. We can see that only .58\\% of observations are complete (have no missing values), and a large majority of the observations are missing data for many variables.", fig.width= 7, fig.height = 5, fig.pos="H"}
 
 # select all variables with missing values for the aggr plot
 
@@ -220,25 +222,29 @@ fin_imp_aggr <- fin_imp %>%
   select(ideology_fill, H_citytract_NHW_i, chng5pctblk, chng5pctlatino, 
          chng5pctasian, diversityinterp, pctblkpopinterp, pctasianpopinterp,
          pctlatinopopinterp, medinc_cpi, pctlocalgovworker_100, pctrentersinterp,
-         pctover65, pctcollegegradinterp)
-
+         pctover65, pctcollegegradinterp) %>%
+    rename("White Ideology" = ideology_fill, "White/Non-White H Index" = H_citytract_NHW_i,
+           "5Y Change % Black" = chng5pctblk, "5Y Change % Latino" = chng5pctlatino, 
+           "5Y Change % Asian" = chng5pctasian, "Diversity" = diversityinterp, 
+           "% Asian" = pctasianpopinterp, "% Black" = pctblkpopinterp, 
+           "% Latino" = pctlatinopopinterp, "Median HH Income" = medinc_cpi,
+           "% Local Gov. Worker" = pctlocalgovworker_100, "% Renters" = pctrentersinterp, 
+           "% College Grads" = pctcollegegradinterp, "% 65+" = pctover65)
+           
 
 new_try <- head(fin_imp_aggr, 20)
 
 # create the aggr plot
 
-aggr(fin_imp_aggr, plot = TRUE, bars = TRUE, col=c('navyblue','red'), numbers= FALSE, cex.axis=.5, gap=2, ylab=c("Proporiton of Missing Values","Combinations"))
+aggr(fin_imp_aggr, plot = TRUE, bars = TRUE, col=c('navyblue','red'), numbers= FALSE, cex.axis=.4, gap=2, ylab=c("Proporiton of Missing Values","Combinations"))
 title(main = "Patterns of Missingness in the Financial Segregation Data",
       sub = "", font.main = 1, font.axis = 1, cex.main = 1, line = 3,  oma = c(1,3,5,1), font.main = 1, font.axis = 1)
-
 # this plot tells us that only .58% of the data are complete (not missing anything)
 
 
 ```
 
 Because neither dataset seems to exhibit any clear patterns in the missing, data, it makes sense to proceed with the imputation. For the racial polarization dataset, I performed multiple imputations with 20 iterations using mice, while for the financial segregation dataset, I performed only 5 iterations due to the large size of the dataset and computing limitaitons. A non-stochastic imputation method, Classification and Regression Trees (CART), was used instead of the default for the imputation for both datasets because of an error with matrix inversion caused by the data that prevented the use of the default method, predictive mean matching. For the racial polarization dataset, I included all of the variables used in the analysis associated with the dataset and was able to impute all missing values. For the financial segregation dataset, however, I only imputed values for the main independent variable, the segregation index, and a few other variables, although all variables used in the analysis were included in the data subset input into the mice function. More of the data could not be imputed from the financial segregation dataset due to computing and time constraints for this project given the dataset's large size and high proportion of missing values. 
-
-
 
 
 
@@ -275,24 +281,33 @@ m3 <- lmer(biggestsplit ~ H_citytract_NHW_i + diversityinterp + pctasianpopinter
 
 ```
 
-```{r results="asis", echo = FALSE, fig.cap= "THIS IS A CAPTION IS IT WORKING WHAT IS GOING ON!"}
+```{r results="asis", echo = FALSE}
 
 # create a stargazer table of the results
 
 t1 <- stargazer(m1, m2, m3, omit = c("year", "south", "midwest", "west"),
                 header = FALSE,
+                style = "apsr",
                 title = "\\textbf{Racial Polarization in Segregated Cities}",
-                single.row = TRUE,
-                no.space = FALSE,
+                single.row = FALSE,
+                no.space = F,
                 keep.stat = c("n"),
                 covariate.labels = c("Multigroup H Index", "White/Nonwhite H Index", "Diversity", "Percent Asian", "Percent Black", "Percent Latino", "Medain HH Income (1000s)", "Percent Renters", "Percent College Degree", "Biracial Contest", "Nonpartisan Election", "Primary Election", "Population (logged)", "White Ideology", "Constant"),
-                dep.var.labels = c("Racial Divide"),
+                dep.var.labels = c("\\textbf{\\underline{Racial Divide with:    }}"),
                 column.labels = c("Multigroup H Index", "White/Nonwhite H Index", "Ideology Controls"),
-                notes = "This table displays the results of the replication\neffort of the analyses conducted in Trounstine (2016) using the racial polarization dataset.\nThe replication code can be found on my personal Github repository, which is linked in the introduction. The original table is displayed for comparison as Figure 1.)",
+                notes = c("Table 1: This table displays the results of the replication effort of the analyses conducted in Trounstine (2016)", 
+                          "using the racial polarization dataset. The replication code can be found on my personal Github repository, which is",
+                          " linked in the introduction. The original table is displayed for comparison as Figure 3."),
                 table.placement = "H",
-                notes.align = "l")
+                notes.align = "l",
+                #column.sep.width = "-10pt",
+                font.size = "small")
 
-# note: "This table displays the results of the replication effort of the analyses conducted in Trounstine (2016) using the racial polarization dataset. The replication code can be found on my personal [Github repository](https://github.com/mburzillo/new_final_project). The original table is displayed for comparison as Figure 1.")
+#c("\\textbf{Table 1:} This table displays the results of the replication effort",
+#                          "of the analyses conducted in Trounstine (2016) using the racial",
+#                          "polarization dataset. The replication code can be found on my
+#                          personal", "Github repository, which is linked in the introduction.",
+#                          "The original table is displayed for comparison as Figure 3.")
 
 ```
 
