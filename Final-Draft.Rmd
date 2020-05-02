@@ -86,7 +86,6 @@ rp_impute <- rp %>%
   mutate(medincinterp = medincinterp/1000,
          year.f = as.factor(year))
 
-
 # apply the conditions in Stata regression to the fin_seg dataset
 
 fin_imp <- fin_seg %>%
@@ -246,7 +245,190 @@ title(main = "Patterns of Missingness in the Financial Segregation Data",
 
 Because neither dataset seems to exhibit any clear patterns in the missing, data, it makes sense to proceed with the imputation. For the racial polarization dataset, I performed multiple imputations with 20 iterations using mice, while for the financial segregation dataset, I performed only 5 iterations due to the large size of the dataset and computing limitaitons. A non-stochastic imputation method, Classification and Regression Trees (CART), was used instead of the default for the imputation for both datasets because of an error with matrix inversion caused by the data that prevented the use of the default method, predictive mean matching. For the racial polarization dataset, I included all of the variables used in the analysis associated with the dataset and was able to impute all missing values. For the financial segregation dataset, however, I only imputed values for the main independent variable, the segregation index, and a few other variables, although all variables used in the analysis were included in the data subset input into the mice function. More of the data could not be imputed from the financial segregation dataset due to computing and time constraints for this project given the dataset's large size and high proportion of missing values. 
 
+```{r rp_imputation, include = FALSE}
 
+# Perform multiple imputations using the cart method. Because of the time it
+# takes to run this function, I turned the results into a dataset to load in
+# instead of re-running everytime.
+
+rp_impute_labels <- rp_impute 
+
+rp_impute_labels$biggestsplit <- "Racial Divide"
+rp_impute_labels$medincinterp <- "Median HH Income"
+
+#c("Racial Divide" = biggestsplit, "Biracial Contest" = biracial, "White Ideology" = whiteideology_fill2, "Median HH Income" = medincinterp, "Diversity" = diversityinterp, "% Asian" = pctasianpopinterp,  "% Black" = pctblkpopinterp, "% Latino" = pctlatinopopinterp,"% Renters" = pctrentersinterp, "% College Grads" = pctcollegegradinterp, "Nonpartisan Elect." = nonpartisan, "South" = south, "Midwest" = midwest,"West" = "west")
+
+
+max_it = 20
+
+imp_1_rp <- mice(rp_impute, method = "cart", maxit = 20)
+
+
+```
+
+```{r fp_imputations_original, eval = FALSE, include = FALSE}
+
+# perform multiple imputations. We have the same issue here with the default method as with the previous dataset so we use CART. Additionally, because of the extremely large size of this dataset, we choose to only impute the variable H_citytract_NHW_i, as it is the most frequently missing variable and also out main independent variable. Just imputing this allows us to include way more observations in the regression than the original data despite the still large number of NAs overall. One concern here would be that if there was some reason that this variable was missing rather than other variables that only imputing this variable could lead to some bias in the results.  
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs <- mice(fin_imp, method = meth, maxit = 1)
+
+# now there are many fewer missing variables!!!
+
+miss_var_summary(complete(imp_fs))
+
+miss_var_summary(fin_imp)
+
+282334 - 222957
+
+```
+
+## make sure to talk about the fact that still a large number of values missing for the imputed variables here
+
+Before examining the results of Trounstine's model using the multiply imputed data, I first ran some diagnostic tests on the imputation results to make sure that everything ran as expected. First, I checked the convergence of the algorithm used within mice() by plotting the trace lines as a function of the number of iterations for each of the variables. Then, I visually inspected the distributions of the imputed data in comparison to the original data with density and strip plots. All of these checks suggested that the imputed values were within a plausible range of the data and that their distribution fit the underlying distribution of the data relatively well. The only cases in which there was some cause for concern were for some of the variables with very few missing values in the racial polarization dataset (such as the indicators for region). However, this is more or less to be expected given the small number of imputations performed in these cases. Thus, and especially because there are so few of these values missing in the actual datasets, this was not a major concern. See figures X and X1 to see the density plots of the imputed values overlayed on the density plots of the original variables. The code to generate the rest of the plots and results of the diagnostic tests discussed here are presented in the Appendix. 
+
+
+```{r rp_densityplot, echo = FALSE}
+
+my.settings <- list(
+  par.main.text = list(font = 1)
+)
+
+densityplot(imp_1_rp, main = "Density Plots of Imputed and Original Data by Variable\nin the Racial Polarization Dataset",
+      par.settings = my.settings,
+      par.strip.text = list(cex = .7))
+
+
+
+```
+
+```{r fs_densityplot, echo = FALSE, eval = FALSE}
+
+densityplot(imp_fs)
+densityplot(x = imp_fs , data = ~ H_citytract_NHW_i + chng5pctblk + 
+       chng5pctlatino + chng5pctasian + ideology_fill)
+
+```
+
+Given the promising results of the diagnostic checks, I next proceeded to re-estimate the original model using the multiply imputed datasets, pooling the results to produce final pooled regression coefficients and parameters. The results for the analyses using the racial polarization dataset are presented in tables X1-X3. 
+
+
+```{r rp_imputations, include = FALSE}
+
+# Now that we have imputed the missing data, we can re-run the analyses from the
+# original paper to see how and if this changes the analysis. We can use the
+# with() function from the mice package to fit each of the imputed datasets to
+# the model and then pool the results afterwards.
+
+# regression 1: fit multiple imputed datasets
+
+fit_imp_1_rp <- with(imp_1_rp, lmer(formula = biggestsplit ~ H_citytract_multi_i + diversityinterp + pctasianpopinterp + pctblkpopinterp + pctlatinopopinterp + medincinterp + pctrentersinterp +  pctcollegegradinterp + biracial + nonpartisan + primary + logpop + year.f + south + midwest + west + (1 | geo_id2), REML=FALSE))
+
+# pool and summarize the analyses
+
+pool_imp_1_rp <- pool(fit_imp_1_rp)
+imp_1_rp_sum <- summary(pool_imp_1_rp)
+
+## regression 2 Table 1: fit multiple imputed datasets
+
+#formula = biggestsplit ~ H_citytract_NHW_i + diversityinterp + pctasianpopinterp + pctblkpopinterp + pctlatinopopinterp + medincinterp + pctrentersinterp +  pctcollegegradinterp + biracial + nonpartisan + primary + logpop + year.f + south + midwest + west + (1 | geo_id2)
+
+fit_imp_2_rp <- with(imp_1_rp, lmer(biggestsplit ~ H_citytract_NHW_i + diversityinterp + pctasianpopinterp + pctblkpopinterp + pctlatinopopinterp + medincinterp + pctrentersinterp +  pctcollegegradinterp + biracial + nonpartisan + primary + logpop + year.f + south + midwest + west + (1 | geo_id2), REML=FALSE))
+                     
+# pool and summarize the analyses
+
+pool_imp_2_rp <- pool(fit_imp_2_rp)
+imp_2_rp_sum <- summary(pool_imp_2_rp)
+
+
+## regression 3 Table 1 with new data
+
+#formula = biggestsplit ~ H_citytract_NHW_i + diversityinterp + pctasianpopinterp + pctblkpopinterp + pctlatinopopinterp + medincinterp + pctrentersinterp +  pctcollegegradinterp + biracial + nonpartisan + primary + logpop + whiteideology_fill2 + year.f + south + midwest + west + (1 | geo_id2)
+
+fit_imp_3_rp <- with(imp_1_rp, lmer(biggestsplit ~ H_citytract_NHW_i + diversityinterp + pctasianpopinterp + pctblkpopinterp + pctlatinopopinterp + medincinterp + pctrentersinterp +  pctcollegegradinterp + biracial + nonpartisan + primary + logpop + whiteideology_fill2 + year.f + south + midwest + west + (1 | geo_id2), REML=FALSE))
+
+# pool and summarize the analyses
+
+pool_imp_3_rp <- pool(fit_imp_3_rp)
+imp_3_rp_sum <- summary(pool_imp_3_rp)
+
+```
+
+The results of the model with the new dataset are slightly different in comparison to the original results from Trounstine (2016). With the imputed data, we now have a total of `r nrow(complete(rp_impute))` observations in our model as compared to the original model, which had only 91 observations. Interestingly, while the sign of the coefficient on the main variable of interest, the Theil's H segregation index, is the same and the standard error has decreased slightly, the result has become statisically insignificant and the 95% confidence interval contains zero. Thus while these results still suggest that segregation may be associated with increased political polarization, they confer a lesser degree of certainty than Trounstine's original analysis. The coefficients for % Black population, % Latino population, and median household income have also switched signs, and all coefficients except the indicator for a biracial election are also statistically insignificant, as was the case in the original analysis. The coefficient on the indicator for a primary election, has also changed from being significant in the original analysis to insignificant here. In general, the standard errors on the coefficients have decreased slightly. 
+
+```{r results_printing_rp_impute_regressions_1, results = "asis", echo=FALSE}
+
+# print results of 1st regression
+
+imp_1_rp_sum_table <- as.data.frame(imp_1_rp_sum) %>% 
+  select(term, estimate, std.error, p.value)) %>%
+  head(13)
+print(imp_1_rp_sum_table)
+
+stargazer(imp_1_rp_sum_table,
+          header = FALSE,
+          title = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Multigroup Segregation Index}")
+
+```
+
+In the second and third regressions, the results are similar. The main coefficient on segregation index has decreased in magnitude, although in these specifications, it remains statistically significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Asian, Black, and Latino have all switched signs. Standard errors have also reduced slightly in these specifications compared to the original analysis in @trounstine_segregation_2016. 
+
+```{r results_printing_rp_impute_regressions_2, results = "asis", echo=FALSE}
+
+# print results of 2nd regression
+
+imp_2_rp_sum_table <- as.data.frame(imp_2_rp_sum) %>% 
+  select(term, estimate, std.error, p.value)) %>%
+  head(13)
+print(imp_2_rp_sum_table)
+
+stargazer(imp_2_rp_sum_table,
+          header = FALSE,
+          title = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Two-Group Segregation Index}")
+
+```
+
+```{r results_printing_rp_impute_regressions_3, results = "asis", echo=FALSE}
+
+# print results of 3rd regression
+
+imp_3_rp_sum_table <- as.data.frame(imp_3_rp_sum) %>% 
+  select(term, estimate, std.error, p.value)) %>%
+  head(13)
+print(imp_3_rp_sum_table)
+
+stargazer(imp_3_rp_sum_table,
+          header = FALSE,
+          title = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Ideology Control}")
+```
+
+
+
+
+\newpage
 
 # Appendix
 
@@ -291,11 +473,10 @@ t1 <- stargazer(m1, m2, m3, omit = c("year", "south", "midwest", "west"),
                 title = "\\textbf{Racial Polarization in Segregated Cities}",
                 single.row = FALSE,
                 no.space = F,
-                keep.stat = c("n"),
                 covariate.labels = c("Multigroup H Index", "White/Nonwhite H Index", "Diversity", "Percent Asian", "Percent Black", "Percent Latino", "Medain HH Income (1000s)", "Percent Renters", "Percent College Degree", "Biracial Contest", "Nonpartisan Election", "Primary Election", "Population (logged)", "White Ideology", "Constant"),
                 dep.var.labels = c("\\textbf{\\underline{Racial Divide with:    }}"),
                 column.labels = c("Multigroup H Index", "White/Nonwhite H Index", "Ideology Controls"),
-                notes = c("Table 1: This table displays the results of the replication effort of the analyses conducted in Trounstine (2016)", 
+                notes = c("Table A1: This table displays the results of the replication effort of the analyses conducted in Trounstine (2016)", 
                           "using the racial polarization dataset. The replication code can be found on my personal Github repository, which is",
                           " linked in the introduction. The original table is displayed for comparison as Figure 3."),
                 table.placement = "H",
@@ -303,16 +484,11 @@ t1 <- stargazer(m1, m2, m3, omit = c("year", "south", "midwest", "west"),
                 #column.sep.width = "-10pt",
                 font.size = "small")
 
-#c("\\textbf{Table 1:} This table displays the results of the replication effort",
-#                          "of the analyses conducted in Trounstine (2016) using the racial",
-#                          "polarization dataset. The replication code can be found on my
-#                          personal", "Github repository, which is linked in the introduction.",
-#                          "The original table is displayed for comparison as Figure 3.")
 
 ```
 
 
-![This is the original table displaying the results of the models for the effects of residential segregation on political polarization from page 713 of @trounstine_segregation_2016. My replication of these results can be found in Table 1 in this paper.](table_1.png)
+![This is the original table displaying the results of the models for the effects of residential segregation on political polarization from page 713 of @trounstine_segregation_2016. My replication of these results can be found in Table A1 in this paper.](table_1.png)
 
 
 
@@ -383,9 +559,20 @@ felm3 <- felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopint
 
 table2 <- stargazer(felm1, felm2, felm3, omit = c("year", "south", "midwest", "west"), 
                     header = FALSE,
+                    style = "apsr",
                     title = "\\textbf{Effect of Segregation on Overall per Capita City Expenditures}",
                     covariate.labels = c("White/Nonwhite H Index", "Diversity", "Percent Black", "Percent Asian", "Percent Latino", "Change Percent Black", "Change Percent Latino", "Change Percent Asian", "Medain HH Income (1000s)", "Percent Government Worker", "Percent Renters", "Percent 65+", "Percent College Degree", "Population (logged)", "White Ideology", "Constant"),
-                    table.placement = "H")
+                    dep.var.labels = c("\\textbf{\\underline{Direct General Expenditure Per Capita}}"),
+                    column.labels = c("Main Specification", "Changing Demographics", "Ideology Controls"),
+                    notes = c("Table A2: This table displays the results of the replication effort of the analyses conducted in Trounstine (2016)", "
+                              assessing the effect of segregation in direct per capita public expenditures using the financial segregation",
+                              "dataset. The replication code can be found on my personal Github repository, which islinked in the introduction."),
+                    table.placement = "H",
+                    notes.align = "l",
+                    font.size = "small")
+
+
+
 
 ```
 
@@ -638,5 +825,38 @@ summary(ivreg7)
 
 ```
 
+```{r additional_robustness_checks_imp_rp, eval = FALSE, include = FALSE}
 
+# ideally, the fits will intertwine and not exhibit any trends at later iterations. This seems to generally be the case. There are some issues with the results for some of the variables with very few missing values, which makes sense as we would expect the mean to be less reliable due to the law of large numbers and thus convergence is more difficult. However, since these are so few values, it is less important about how robust they are. 
+
+plot(imp_1_rp)
+
+# we can also check the imputed values against the original values using stripplot(). Each column in each subplot represents a separate iteration. The magenta points represent the imputed data. The values of the variable in questions are along the y axis. We expect the spread of the data to be similar if the imputations were done well. If the data were missing completely at random, then the imputed data should have the same distribution as the original data. In particular, we want to be sure that the imputations are within a plausible range of the data. This is the case for all of our imputed variables, and there does not seem to be cause for alarm from these results. 
+
+stripplot(imp_1_rp)
+
+```
+
+```{r additional_robustness_checks_imp_fs_v1, eval = FALSE, include = FALSE}
+
+# ideally, the fits will intertwine and not exhibit any trends at later iterations. This seems to generally be the case. There are some issues with the results for some of the variables with very few missing values, which makes sense as we would expect the mean to be less reliable due to the law of large numbers and thus convergence is more difficult. However, since these are so few values, it is less important about how robust they are. 
+
+plot(imp_fs)
+
+# we can also check the imputed values against the original values using stripplot(). Each column in each subplot represents a separate iteration. The magenta points represent the imputed data. The values of the variable in questions are along the y axis. We expect the spread of the data to be similar if the imputations were done well. If the data were missing completely at random, then the imputed data should have the same distribution as the original data. In particular, we want to be sure that the imputations are within a plausible range of the data. This is the case for all of our imputed variables, and there does not seem to be cause for alarm from these results. 
+
+stripplot(imp_fs, H_citytract_NHW_i)
+
+stripplot(imp_fs, chng5pctblk)
+
+stripplot(imp_fs, chng5pctlatino)
+
+stripplot(imp_fs, chng5pctasian)
+
+stripplot(imp_fs, ideology_fill)
+
+
+```
+
+\newpage
 # Bibliography

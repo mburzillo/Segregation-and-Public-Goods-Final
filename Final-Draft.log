@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  1 MAY 2020 17:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  2 MAY 2020 11:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -938,6 +938,15 @@ Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
 
 LaTeX Warning: Label `' multiply defined.
 
+
+LaTeX Warning: Label `' multiply defined.
+
+
+LaTeX Warning: Label `' multiply defined.
+
+
+LaTeX Warning: Label `' multiply defined.
+
 )
 \openout1 = `Final-Draft.aux'.
 
@@ -1104,7 +1113,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 140.
 [2] [3]
-<Final-Draft_files/figure-latex/rp_aggr_plot-1.pdf, id=59, 423.5825pt x 347.297
+<Final-Draft_files/figure-latex/rp_aggr_plot-1.pdf, id=63, 423.5825pt x 347.297
 5pt>
 File: Final-Draft_files/figure-latex/rp_aggr_plot-1.pdf Graphic file (type pdf)
 
@@ -1113,7 +1122,7 @@ Package pdftex.def Info: Final-Draft_files/figure-latex/rp_aggr_plot-1.pdf used
  on input line 339.
 (pdftex.def)             Requested size: 423.59439pt x 347.30724pt.
 [4]
-<Final-Draft_files/figure-latex/fin_aggr_plot-1.pdf, id=69, 481.8pt x 354.32375
+<Final-Draft_files/figure-latex/fin_aggr_plot-1.pdf, id=73, 481.8pt x 354.32375
 pt>
 File: Final-Draft_files/figure-latex/fin_aggr_plot-1.pdf Graphic file (type pdf
 )
@@ -1127,78 +1136,124 @@ has been already used, duplicate ignored
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.364 
-       <./Final-Draft_files/figure-latex/rp_aggr_plot-1.pdf>]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 392.
+       <./Final-Draft_files/figure-latex/rp_aggr_plot-1.pdf>] [6pdfTeX warning 
+(ext4): destination with the same identifier (name{figure.2}) has been already 
+used, duplicate ignored
 
-Overfull \hbox (11.38503pt too wide) in paragraph at lines 392--435
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.410 
+       <./Final-Draft_files/figure-latex/fin_aggr_plot-1.pdf>]
+<Final-Draft_files/figure-latex/rp_densityplot-1.pdf, id=99, 453.695pt x 297.11
+pt>
+File: Final-Draft_files/figure-latex/rp_densityplot-1.pdf Graphic file (type pd
+f)
+<use Final-Draft_files/figure-latex/rp_densityplot-1.pdf>
+Package pdftex.def Info: Final-Draft_files/figure-latex/rp_densityplot-1.pdf us
+ed on input line 411.
+(pdftex.def)             Requested size: 453.6939pt x 297.10927pt.
+[7 <./Final-Draft_files/figure-latex/rp_densityplot-1.pdf>]
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 438.
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+Underfull \hbox (badness 1082) in paragraph at lines 511--521
+[]\T1/lmr/m/n/10 (+20) 1 (In-ter-cept) 0.03161226 0.494480802 0.949809318 2 H_c
+itytract_NHW_i 0.56382756 0.257506957
+ []
+
+
+Underfull \hbox (badness 1077) in paragraph at lines 511--521
+\T1/lmr/m/n/10 (+20) 0.033361645 3 di-ver-si-ty-in-terp 0.11339515 0.278801961 
+0.686073897 4 pc-tasian-popin-terp 0.17314648
+ []
+
+[8pdfTeX warning (ext4): destination with the same identifier (name{table.1}) h
+as been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.537 \newpage
+              pdfTeX warning (ext4): destination with the same identifier (name
+{table.2}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.537 \newpage
+              ]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 546.
+
+Overfull \hbox (11.38503pt too wide) in paragraph at lines 546--592
  [][] 
  []
 
-[6pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) 
-has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.436 
-       <./Final-Draft_files/figure-latex/fin_aggr_plot-1.pdf>] <table_1.png, id
-=95, 608.2725pt x 411.5375pt>
+<table_1.png, id=124, 608.2725pt x 411.5375pt>
 File: table_1.png Graphic file (type png)
 <use table_1.png>
-Package pdftex.def Info: table_1.png used on input line 439.
+Package pdftex.def Info: table_1.png used on input line 596.
 (pdftex.def)             Requested size: 469.7635pt x 317.82678pt.
-[7pdfTeX warning (ext4): destination with the same identifier (name{table.1}) h
+
+Overfull \hbox (1.29573pt too wide) in paragraph at lines 607--654
+ [][] 
+ []
+
+[9pdfTeX warning (ext4): destination with the same identifier (name{table.3}) h
 as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.512 
-      ] [8pdfTeX warning (ext4): destination with the same identifier (name{fig
-ure.3}) has been already used, duplicate ignored
+l.655 
+      pdfTeX warning (ext4): destination with the same identifier (name{table.4
+}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.512 
-       <./table_1.png>]
-Overfull \vbox (41.65561pt too high) has occurred while \output is active []
-
-[9pdfTeX warning (ext4): destination with the same identifier (name{table.2}) h
-as been already used, duplicate ignored
+l.655 
+      ] [10pdfTeX warning (ext4): destination with the same identifier (name{fi
+gure.3}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.512 
-      ]
-Overfull \hbox (0.54793pt too wide) in paragraph at lines 584--589
+l.655 
+       <./table_1.png>] [11pdfTeX warning (ext4): destination with the same ide
+ntifier (name{table.5}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.656 \newpage
+              ]
+Overfull \hbox (0.54793pt too wide) in paragraph at lines 729--734
 [][]\T1/lmr/m/n/10 (-20) ---------. 2016. ``Segregation and Inequality in Publi
 c Goods: SEGREGATION AND INEQUALITY IN PUBLIC
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 596.
-[10]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 596.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 741.
+[12]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 741.
 (./Final-Draft.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 596.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 596.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 741.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 741.
 Package rerunfilecheck Info: File `Final-Draft.out' has not changed.
-(rerunfilecheck)             Checksum: DB9FAD519AB8D74DF9B8A4D6FDF4FB83;696.
+(rerunfilecheck)             Checksum: BF9ABCABDFE5E84E63D56D7CE0725B99;1342.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 596.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 741.
  ) 
 Here is how much of TeX's memory you used:
- 14314 strings out of 492995
- 205394 string characters out of 6132704
- 341116 words of memory out of 5000000
- 17484 multiletter control sequences out of 15000+600000
- 74416 words of font info for 114 fonts, out of 8000000 for 9000
+ 14373 strings out of 492995
+ 206628 string characters out of 6132704
+ 341251 words of memory out of 5000000
+ 17529 multiletter control sequences out of 15000+600000
+ 77816 words of font info for 117 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,12n,38p,990b,347s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/lo
-cal/texlive/2017/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive/20
-17/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2017/texmf-d
-ist/fonts/enc/dvips/lm/lm-rm.enc}</usr/local/texlive/2017/texmf-dist/fonts/type
+ 34i,12n,38p,990b,349s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/
+texlive/2017/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2017/t
+exmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2017/texmf-dist/
+fonts/enc/dvips/lm/lm-mathsy.enc}</usr/local/texlive/2017/texmf-dist/fonts/type
 1/public/lm/lmbx10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/l
 m/lmbx12.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmbx9.pf
 b></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/lo
@@ -1212,12 +1267,12 @@ al/texlive/2017/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2
 017/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/2017/texmf-
 dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2017/texmf-dist/fonts
 /type1/public/lm/lmsy6.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/publ
-ic/lm/lmsy7.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmsy9
-.pfb>
-Output written on Final-Draft.pdf (10 pages, 621188 bytes).
+ic/lm/lmsy9.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmtt1
+0.pfb>
+Output written on Final-Draft.pdf (12 pages, 832738 bytes).
 PDF statistics:
- 230 PDF objects out of 1000 (max. 8388607)
- 191 compressed objects within 2 object streams
- 46 named destinations out of 1000 (max. 500000)
- 18504 words of extra memory for PDF output out of 20736 (max. 10000000)
+ 262 PDF objects out of 1000 (max. 8388607)
+ 217 compressed objects within 3 object streams
+ 53 named destinations out of 1000 (max. 500000)
+ 18517 words of extra memory for PDF output out of 20736 (max. 10000000)
 
