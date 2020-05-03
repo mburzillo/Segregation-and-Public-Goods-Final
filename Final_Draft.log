@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  2 MAY 2020 17:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  2 MAY 2020 17:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1144,7 +1144,7 @@ Package pdftex.def Info: Final_Draft_files/figure-latex/rp_densityplot-1.pdf us
 ed on input line 411.
 (pdftex.def)             Requested size: 453.6939pt x 297.10927pt.
 [7 <./Final_Draft_files/figure-latex/rp_densityplot-1.pdf>]
-Overfull \hbox (35.16138pt too wide) in paragraph at lines 442--473
+Overfull \hbox (14.66194pt too wide) in paragraph at lines 442--473
  [][] 
  []
 
@@ -1154,7 +1154,7 @@ Overfull \hbox (33.355pt too wide) in paragraph at lines 486--515
  []
 
 
-Overfull \hbox (172.96596pt too wide) in paragraph at lines 530--560
+Overfull \hbox (19.13225pt too wide) in paragraph at lines 530--560
  [][] 
  []
 
@@ -1257,7 +1257,7 @@ al/texlive/2017/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2
 dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2017/texmf-dist/fonts
 /type1/public/lm/lmsy6.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/publ
 ic/lm/lmsy9.pfb>
-Output written on Final_Draft.pdf (14 pages, 815532 bytes).
+Output written on Final_Draft.pdf (14 pages, 815542 bytes).
 PDF statistics:
  267 PDF objects out of 1000 (max. 8388607)
  221 compressed objects within 3 object streams

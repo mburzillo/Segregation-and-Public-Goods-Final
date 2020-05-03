@@ -400,12 +400,12 @@ imp_1_rp_sum_table_vars <- tibble(
 kable(imp_1_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Multigroup Segregation Index}", booktabs = T) %>%
   row_spec(0, bold = TRUE) %>%
   footnote(general = c("This table shows the results of Trounstine's first model for the effect of segregation on political polarization",
-  "(racial vote divide) using the multi-group Theil's H segregation Index using the new, multiply imputed datasets.",
-  "The sign of the coefficient on the main variable of interest, the segregation index, is the same, but the",
-  "result has become statisically insignificant with the 95% confidence interval containing zero. Thus",
+  "(racial vote divide) using the multi-group Theil's H segregation Index using the new, multiply imputed",
+  "datasets. The sign of the coefficient on the main variable of interest, the segregation index, is the same, but",
+  "the result has become statisically insignificant with the 95% confidence interval containing zero. Thus",
   "while these results still suggest that segregation may be associated with increased political polarization,",
-  "they confer a lesser degree of certainty than Trounstine's original analysis. The coefficients for %",
-  "Black population, % Latino population, and median household income have also switched signs. The coefficient",
+  "they confer a lesser degree of certainty than Trounstine's original analysis. The coefficients for % Black",
+  "population, % Latino population, and median household income have also switched signs. The coefficient",
   "on the indicator for a primary election, has also changed from being significant in the original analysis",
   "to insignificant here. In general, the standard errors on the coefficients have decreased slightly."),
            general_title = "Table 1:")%>%
@@ -467,11 +467,11 @@ kable(imp_3_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization 
   row_spec(0, bold = TRUE) %>%
   footnote(general = c("This table shows the results of Trounstine's third model for the effect of segregation on political polarization",
   "(racial vote divide) using the two-group Theil's H segregation Index and including controls for ideology",
-  "using the new, multiply imputed datasets. Compared to Trounstine's original results, the main coefficient on segregation index has decreased in",
-  "magnitude although, it remains statistically significant. The other coefficients except for the biracial",
-  "indicator are insignificant, and the coefficients on percent Asian and Black have switched signs.",
-  "Standard errors have also reduced slightly in these specifications compared to the original analysis",
-  "in Trounstine (2016)."),
+  "using the new, multiply imputed datasets. Compared to Trounstine's original results, the main coefficient on",
+  "segregation index has decreased in magnitude although, it remains statistically significant. The other",
+  "coefficients except for the biracial indicator are insignificant, and the coefficients on percent Asian and",
+  "Black have switched signs. Standard errors have also reduced slightly in these specifications compared to",
+  "the original analysis in Trounstine (2016)."),
            general_title = "Table 3:") %>%
   kable_styling(full_width = TRUE)
 
@@ -908,6 +908,10 @@ stripplot(imp_fs, ideology_fill)
 
 
 ```
+
+
+
+
 
 \newpage
 # Bibliography
