@@ -399,13 +399,21 @@ imp_1_rp_sum_table_vars <- tibble(
 
 kable(imp_1_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Multigroup Segregation Index}", booktabs = T) %>%
   row_spec(0, bold = TRUE) %>%
-  footnote(general = c("This table shows the results of Trounstine's first model for the effect of segregation on political polarization (racial vote divide) using the multi-group Theil's H segregation Index using the new, multiply imputed datasets. The sign of the coefficient on the main variable of interest, the segregation index, is the same, but the result has become statisically insignificant with the 95% confidence interval containing zero. Thus while these results still suggest that segregation may be associated with increased political polarization, they confer a lesser degree of certainty than Trounstine's original analysis. The coefficients for % Black population, % Latino population, and median household income have also switched signs. The coefficient on the indicator for a primary election, has also changed from being significant in the original analysis to insignificant here. In general, the standard errors on the coefficients have decreased slightly."),
+  footnote(general = c("This table shows the results of Trounstine's first model for the effect of segregation on political polarization",
+  "(racial vote divide) using the multi-group Theil's H segregation Index using the new, multiply imputed datasets.",
+  "The sign of the coefficient on the main variable of interest, the segregation index, is the same, but the",
+  "result has become statisically insignificant with the 95% confidence interval containing zero. Thus",
+  "while these results still suggest that segregation may be associated with increased political polarization,",
+  "they confer a lesser degree of certainty than Trounstine's original analysis. The coefficients for %",
+  "Black population, % Latino population, and median household income have also switched signs. The coefficient",
+  "on the indicator for a primary election, has also changed from being significant in the original analysis",
+  "to insignificant here. In general, the standard errors on the coefficients have decreased slightly."),
            general_title = "Table 1:")%>%
   kable_styling(full_width = TRUE)
 
 ```
 
-In the second and third regressions, the results are similar. The main coefficient on segregation index has decreased in magnitude, although in these specifications, it remains statistically significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Asian, Black, and Latino have all switched signs. Standard errors have also reduced slightly in these specifications compared to the original analysis in @trounstine_segregation_2016. 
+In the second regression, the results are similar. The main coefficient on segregation index has decreased in magnitude, although in these specifications, it remains statistically significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Latino, and median household income have all switched signs.
 
 ```{r results_printing_rp_impute_regressions_2, results = "asis", echo=FALSE}
 
@@ -425,11 +433,19 @@ imp_2_rp_sum_table_vars <- tibble(
 
 kable(imp_2_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Two-Group Segregation Index}", booktabs = T) %>%
   row_spec(0, bold = TRUE) %>%
-  footnote(general = c("This table shows the results of Trounstine's second model for the effect of segregation on political polarization (racial vote divide) using the two-group Theil's H segregation Index using the new, multiply imputed datasets. Compared to Trounstine's original results, the main coefficient on segregation index has decreased in magnitude, although, it remains statistically significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Latino, and Median Income have switched signs. Standard errors have also reduced slightly in these specifications compared to the original analysis in Trounstine (2016)."),
+  footnote(general = c("This table shows the results of Trounstine's second model for the effect of segregation on political polarization",
+  "(racial vote divide) using the two-group Theil's H segregation Index using the new, multiply imputed datasets.", 
+  "Compared to Trounstine's original results, the main coefficient on segregation index has decreased in magnitude",
+  "although, it remains statistically significant. The other coefficients except for the biracial indicator are",
+  "insignificant, and the coefficients on percent Black, percent Latino, and Median Income have switched signs.",
+  "Standard errors have also reduced slightly in these specifications compared to the original analysis in",
+  "Trounstine (2016)."),
            general_title = "Table 2:") %>%
   kable_styling(full_width = TRUE)
 
 ```
+
+In the third regression, like in the second, the main coefficient on segregation index has decreased in magnitude but remains significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Asian, median income, and logged population have switched signs. In all three of the specifications, tandard errors reduced slightly using the larger, multiply imputed datasets compared to the original analysis with the original data in @trounstine_segregation_2016. 
 
 ```{r results_printing_rp_impute_regressions_3, results = "asis", echo=FALSE}
 
@@ -437,11 +453,11 @@ kable(imp_2_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization 
 
 imp_3_rp_sum_table <- as.data.frame(imp_3_rp_sum) %>% 
   select(term, estimate, std.error, p.value) %>%
-  head(13)
+  head(14)
 
 imp_3_rp_sum_table_vars <- tibble(
   Variable = c("Intercept", "White/Nonwhite Seg. Index", "Diversity", "% Asian", "% Black", "% Latino",
-               "Median Income (1000s)", "% Renters", "% College Grads", "Biracial Elec.", "Nonpartisan Elec.", "Primary Elec.", "Pop (logged)"),
+               "Median Income (1000s)", "% Renters", "% College Grads", "Biracial Elec.", "Nonpartisan Elec.", "Primary Elec.", "Pop (logged)", "White Ideology"),
   Estimate = round(imp_3_rp_sum_table$estimate, 3),
   `Std. Error` = round(imp_3_rp_sum_table$std.error,3),
   `P-Value` = round(imp_3_rp_sum_table$p.value, 3)
@@ -449,7 +465,13 @@ imp_3_rp_sum_table_vars <- tibble(
 
 kable(imp_3_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Ideology Control}", booktabs = T) %>%
   row_spec(0, bold = TRUE) %>%
-  footnote(general = c("This table shows the results of Trounstine's third model for the effect of segregation on political polarization (racial vote divide) using the two-group Theil's H segregation Index and including controls for ideology using the new, multiply imputed datasets. Compared to Trounstine's original results, the main coefficient on segregation index has decreased in magnitude, although, it remains statistically significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Asian and Black have switched signs. Standard errors have also reduced slightly in these specifications compared to the original analysis in Trounstine (2016).""),
+  footnote(general = c("This table shows the results of Trounstine's third model for the effect of segregation on political polarization",
+  "(racial vote divide) using the two-group Theil's H segregation Index and including controls for ideology",
+  "using the new, multiply imputed datasets. Compared to Trounstine's original results, the main coefficient on segregation index has decreased in",
+  "magnitude although, it remains statistically significant. The other coefficients except for the biracial",
+  "indicator are insignificant, and the coefficients on percent Asian and Black have switched signs.",
+  "Standard errors have also reduced slightly in these specifications compared to the original analysis",
+  "in Trounstine (2016)."),
            general_title = "Table 3:") %>%
   kable_styling(full_width = TRUE)
 
@@ -511,7 +533,6 @@ t1 <- stargazer(m1, m2, m3, omit = c("year", "south", "midwest", "west"),
                           " linked in the introduction. The original table is displayed for comparison as Figure 3."),
                 table.placement = "H",
                 notes.align = "l",
-                #column.sep.width = "-10pt",
                 font.size = "small")
 
 
