@@ -37,6 +37,7 @@ library(mice)
 library(VIM)
 library(kableExtra)
 library(huxtable)
+library(naniar)
 ```
 
 ```{r data_imports, include = FALSE}
