@@ -190,7 +190,7 @@ title(main = "Patterns of Missingness in the Financial Segregation Data",
 Because neither dataset seems to exhibit any clear patterns in the missing, data, it makes sense to proceed with the imputation. For the racial polarization dataset, I performed multiple imputations with 20 iterations using mice, while for the financial segregation dataset, I performed only 5 iterations due to the large size of the dataset and computing limitaitons. A non-stochastic imputation method, Classification and Regression Trees (CART), was used instead of the default for the imputation for both datasets because of an error with matrix inversion caused by the data that prevented the use of the default method, predictive mean matching. For the racial polarization dataset, I included all of the variables used in the analysis associated with the dataset and was able to impute all missing values. For the financial segregation dataset, however, I only imputed values for the main independent variable, the segregation index, and a few other variables, although all variables used in the analysis were included in the data subset input into the mice function. More of the data could not be imputed from the financial segregation dataset due to computing and time constraints for this project given the dataset's large size and high proportion of missing values. 
 
 
-```{r fp_imputations_original, include = FALSE, eval = FALSE}
+```{r fp_imputations_original, include = FALSE}
 
 # perform multiple imputations. We have the same issue here with the default method as with the previous dataset so we use CART. Additionally, because of the extremely large size of this dataset, we choose to only impute the variable H_citytract_NHW_i, as it is the most frequently missing variable and also out main independent variable. Just imputing this allows us to include way more observations in the regression than the original data despite the still large number of NAs overall. One concern here would be that if there was some reason that this variable was missing rather than other variables that only imputing this variable could lead to some bias in the results.  
 
@@ -311,12 +311,15 @@ print(imp_felm1_sum)
 
 # basic filter for table for all regressions
 
+# basic filter for table for all regressions
+
 # xtreg dgepercap_cpi H_citytract_NHW_i diversityinterp pctblkpopinterp
 # pctasianpopinterp pctlatinopopinterp medinc_cpi pctlocalgovworker_100
 # pctrentersinterp pctover65 pctcollegegradinterp logpop if totaltracts>1 &
 # dgepercap_cpi~=0,fe vce(cluster geo_id2)
 
-fin <- complete(imp_fs) %>%
+fin <-fin_seg %>%
+  filter(totaltractsf >1 | is.na(totaltractsf)) %>%
   filter(!(is.na(dgepercap_cpi)), !(is.na(H_citytract_NHW_i)), !(is.na(diversityinterp)),
          !(is.na(pctblkpopinterp)), !(is.na(pctasianpopinterp)), !(is.na(pctlatinopopinterp)),
          !(is.na(medinc_cpi)), !(is.na(pctlocalgovworker_100)), !(is.na(pctrentersinterp)),
@@ -365,15 +368,15 @@ imp_felm1_sum_table_vars <- tibble(
 )
 
 kable(imp_felm1_sum_table_vars, "latex",
-      caption = "\\textbf{Effect of Segregation on Overall per Capita City Expenditures: Direct General Expenditure per Capita}",
+      caption = "\\textbf{Effect of Segregation on Overall per Capita Direct General City Expenditures: Imputed Data for all Cities}",
       booktabs = T) %>%
     row_spec(0, bold = TRUE) %>%
-  footnote(general = c("This table shows the results of Trounstine's first model for the effect of segregation on per capita",
-  "direct public expenditure using the two-group Theil's H Segregation Index using the new, multiply imputed datasets.",
+  footnote(general = c("This table shows the results of Trounstine's first model for the effect of segregation on per capita direct",
+  "public expenditure using the two-group Theil's H Segregation Index using the new, multiply imputed datasets.",
   "The results present a stark contrast to Trounstine's original results: the main coefficient on segregation index",
-  "has decreased to essentially zero and has become statistically insignificant. The very large P-Value may indicate there is",
-  "a larger difference between the two models. The coefficient on diversity has increased in magnitude and become",
-  "statistically significant."),
+  "has decreased to essentially zero and has become statistically insignificant. The very large P-Value may indicate",
+  "there is a larger difference between the two models. The coefficient on diversity has increased in magnitude and",
+  "become statistically significant."),
            general_title = "Table 4:") %>%
   kable_styling(full_width = TRUE)
 
@@ -408,7 +411,7 @@ kable(imp_felm2_sum_table_vars, "latex",
 
 ```
 
-```{r results_printing_fs_impute_regressions_3, results = "asis", echo=FALSE, eval = FALSE, invlude = FALSE}
+```{r results_printing_fs_impute_regressions_3, results = "asis", echo=FALSE, eval = FALSE, include = FALSE}
 
 # print results of 3rd regression
 
@@ -624,7 +627,7 @@ imp_over_baqir_1_sum_table_vars <- tibble(
 )
 
 kable(imp_over_baqir_1_sum_table_vars, "latex",
-      caption = "\\textbf{Effect of Segregation on Overall per Capita City Expenditures: Direct General Expenditure per Capita}",
+      caption = "\\textbf{Effect of Segregation on Overall per Capita Direct General City Expenditures: Imputed Data for Cities with Populations of 25,000+}",
       booktabs = T) %>%
     row_spec(0, bold = TRUE) %>%
   footnote(general = c("This table shows the results of Trounstine's third model for the effect of segregation on political polarization",
@@ -687,7 +690,7 @@ pop_hist_data <- left_join(pop_hist_data, median_pops)
 ```
 
 
-```{r city_pops_histogram, echo = FALSE}
+```{r city_pops_histogram, echo = FALSE, warning = FALSE}
 
 pop_hist_data %>%
   ggplot() +
@@ -695,54 +698,311 @@ pop_hist_data %>%
   geom_vline(aes(xintercept = median_log_pop), color = "red") +
   facet_wrap(~Analysis) +
   coord_cartesian(xlim = c(0,15)) +
-  ggtitle("Histograms of Log Populaiton of City Observations Included in the Various\nRegression Analyses") +
-  labs(caption = "This figure makes clear the differences in city size (in terms of population) among the different analyses. It is\nclear that the listwise deletion of observations with missing values resulted in a sample that almost entirely\nconsisted of larger cities in Trounstine (2016). The distribution of city population in Trounstine (2016) more\nclosely resembles the distribution of the original sample with a greater than 25,000 population cutoff imposed\nthan the original sample. The red lines indicate the median log population in each sample.") +
+  ggtitle("Histograms of Log Populaiton of City Observations Included in the\nVarious Regression Analyses") +
+  labs(caption = "This figure makes clear the differences in city size (in terms of population) among the different analyses.\n It is clear that the listwise deletion of observations with missing values resulted in a sample that almost entirely\nconsisted of larger cities in Trounstine (2016). The distribution of city population in Trounstine (2016)\nmore closely resembles the distribution of the original sample with a greater than 25,000 population\ncutoff imposed than the original sample. The red lines indicate the median log population in each sample.") +
   ylab("Count") +
   xlab("Log Population") +
   theme_bw() +
-  theme(plot.caption = element_text(hjust = 0))
+  theme(plot.caption = element_text(hjust = 0),
+        strip.text.x = element_text(size = 8))
 
 ```
 
 
-```{r calc_coeff_sds_original_fs_impute, include = FALSE, eval = FALSE}
+```{r top_1_%_pop}
+
+fin_imp_top_1 <- fin_imp %>%
+  filter(logpop > quantile(fin_seg$logpop, c(.95), na.rm = T))
+
+nrow(fin_imp_top_1)
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_top_1, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_fs_pop_top_1 <- mice(fin_imp_top_1, method = meth, maxit = 5)
+
+
+# fit multiple imputed datasets
+
+fit_fs_pop_top_1 <- with(imp_fs_pop_top_1, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_fs_pop_top_1 <- pool(fit_fs_pop_top_1)
+imp_fs_pop_top_1_sum <- summary(pool_fs_pop_top_1)
+
+```
+
+
+```{r}
+fin_seg %>%
+  ggplot(aes(x = logpop)) +
+  geom_histogram() +
+  geom_vline(aes(xintercept = log(25000)))
+
+log(25000)
+```
+
+
+```{r bottom_60_%_pop}
+
+quantile(fin_seg$logpop, c(.60), na.rm = T)
+
+fin_imp_bottom_60 <- fin_imp %>%
+  filter(logpop < quantile(fin_seg$logpop, c(.60), na.rm = T))
+
+nrow(fin_imp_bottom_60)
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_bottom_60, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_bottom_60 <- mice(fin_imp_bottom_60, method = meth, maxit = 5)
+
+
+# fit multiple imputed datasets
+
+fit_imp_bottom_60 <- with(imp_bottom_60, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_fs_bottom_60 <- pool(fit_imp_bottom_60)
+imp_fs_pop_bottom_60<- summary(pool_fs_bottom_60)
+
+```
+
+```{r 50k}
+
+fin_imp_50k <- fin_imp %>%
+  filter(logpop < log(50000))
+
+nrow(fin_imp_50k)
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_50k, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_50k <- mice(fin_imp_50k, method = meth, maxit = 1)
+
+
+# fit multiple imputed datasets
+
+fit_imp_50k <- with(imp_50k, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses: insignificant for both
+
+pool_fs_50k<- pool(fit_imp_50k)
+imp_fs_pop_50k<- summary(pool_fs_50k)
+
+```
+
+```{r 250k}
+
+fin_imp_250k <- fin_imp %>%
+  filter(logpop < log(250000))
+
+nrow(fin_imp_250k)
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_250k, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_250k <- mice(fin_imp_250k, method = meth, maxit = 1)
+
+
+# fit multiple imputed datasets
+
+fit_imp_250k <- with(imp_250k, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_fs_250k<- pool(fit_imp_250k)
+imp_fs_pop_250k<- summary(pool_fs_250k)
+
+```
+
+```{r 500k}
+
+fin_imp_250_500k <- fin_imp %>%
+  filter(logpop > log(250000) & logpop < log(500000))
+
+nrow(fin_imp_250k)
+
+# generate a blank run to get the method matrix
+
+ini <- mice(fin_imp_250k, maxit = 0, print = FALSE)
+
+# view the current method settings
+
+meth <- ini$method
+
+# change the method variables for all variables except H_citytract_NHW_i to ""
+# so that their missing values aren't imputed
+
+meth[c("dgepercap_cpi", "diversityinterp", "pctblkpopinterp", "pctasianpopinterp",
+         "pctlatinopopinterp", "medinc_cpi", "pctlocalgovworker_100", "pctrentersinterp",
+         "pctover65", "pctcollegegradinterp", "logpop", "geo_id2")]=""
+
+# change the default method to "cart" so that we don't get the error
+
+meth[c("H_citytract_NHW_i", "chng5pctblk", 
+       "chng5pctlatino", "chng5pctasian", "ideology_fill")] = "cart"
+
+# perform the multiple imputations with 5 iterations
+
+imp_250k <- mice(fin_imp_250k, method = meth, maxit = 1)
+
+
+# fit multiple imputed datasets
+
+fit_imp_250k <- with(imp_250k, felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2))
+
+# pool the analyses
+
+pool_fs_250k<- pool(fit_imp_250k)
+imp_fs_pop_250k<- summary(pool_fs_250k)
+
+```
+
+
+
+```{r calc_coeff_sds_original_fs_impute, include = FALSE}
 
 imp_felm1_sum[1,2]
 imp_under_baqir_1_sum
 imp_over_baqir_1_sum
-coef(felm1)[1]
+#coef(felm1)[1]
+imp_fs_pop_top_1_sum
 
-summary(felm1)$coeff[2,2]
+#summary(felm1)$coeff[2,2]
+
+# lets put the models in order of increasing median population size in the sample.
+
+pop_hist_data %>%
+  select(Analysis, median_log_pop) %>%
+  arrange(median_log_pop) %>%
+  unique()
 
 model_coeff <- tibble(
-  variable = c("H_citytract_NHW_i", "diversityinterp", 
-               "H_citytract_NHW_i", "diversityinterp", 
-               "H_citytract_NHW_i", "diversityinterp",
-               "H_citytract_NHW_i", "diversityinterp"),
-  estimate = c(imp_felm1_sum[1,2], imp_felm1_sum[2,2],
-               imp_under_baqir_1_sum[1,2], imp_under_baqir_1_sum[2,2],
+  variable = c("White/Non-White Seg. Index", "Diversity", 
+               "White/Non-White Seg. Index", "Diversity", 
+               #"White/Non-White Seg. Index", "Diversity",
+               "White/Non-White Seg. Index", "Diversity",
+               "White/Non-White Seg. Index", "Diversity"),
+  estimate = c(imp_under_baqir_1_sum[1,2], imp_under_baqir_1_sum[2,2],
+               imp_felm1_sum[1,2], imp_felm1_sum[2,2],
+               #coef(felm1)[1], coef(felm1)[2],
                imp_over_baqir_1_sum[1,2], imp_over_baqir_1_sum[2,2],
-               coef(felm1)[1], coef(felm1)[2]),
+               imp_fs_pop_top_1_sum[1,2], imp_fs_pop_top_1_sum[2,2]),
   std_error = c(imp_under_baqir_1_sum[1,3], imp_under_baqir_1_sum[2,3],
-                imp_felm2_sum[1,3], imp_felm2_sum[2,3],
+                imp_felm1_sum[1,3], imp_felm1_sum[2,3],
+                #summary(felm1)$coeff[1,2], summary(felm1)$coeff[2,2],
                 imp_over_baqir_1_sum[1,3], imp_over_baqir_1_sum[2,3],
-                summary(felm1)$coeff[1,2], summary(felm1)$coeff[2,2]),
-  model = c(1, 1,
+                imp_fs_pop_top_1_sum[1,3], imp_fs_pop_top_1_sum[2,3]),
+  model = c(1, 1, 
             2, 2,
+            #3, 3,
             3, 3,
-            4, 4)
+            5, 5)
 )
 
 model_coeff <- model_coeff %>%
   mutate(variable = as.factor(variable))
 
+
+```
+
+
+```{r coef_plot, echo = FALSE}
+
+coef.labels <- c("Diversity", "White/Non-White Seg. Index")
+names(coef.labels) <- c("Diversity", "White/Non-White Seg. Index")
+
 model_coeff %>%
   ggplot(aes(x = model, y = estimate)) +
   geom_point()+
-  geom_errorbar(aes(ymin = estimate - std_error, ymax = estimate + std_error, width = .2)) +
+  geom_errorbar(aes(ymin = estimate - 2 * std_error, ymax = estimate + 2 * std_error, width = .2)) +
   geom_hline(yintercept = 0, color = "red") +
-  facet_wrap(~variable)
-
+  facet_wrap(~variable, labeller = labeller(variable = coef.labels)) +
+  ggtitle("Coefficient Plots for Diversity and White/Non-White Segregation Indices Across\nthe Models")+
+  xlab("Models Ordered by Increasing Median Population Size of the Sample") +
+  ylab("Estimate and 95% Confidence Interval") +
+  labs(caption = "This plot demonstrates how the significance of diversity and segregation in predicting public\ngoods spending varies with city size. As city populaiton size increases, diversity tends to have\nless explanatory power for public goods spending while segregation has more. The opposite\nis true when considering city population size decreasing: segregation becomes less important\nas diversity becomes increasingly important.") +
+  theme_bw()+
+  theme(plot.caption = element_text(hjust = 0))
 
 
 ```
