@@ -319,21 +319,6 @@ densityplot(imp_1_rp, main = "Density Plots of Imputed and Original Data by Vari
 
 ```
 
-```{r fs_densityplot, echo = FALSE}
-
-my.settings <- list(
-  par.main.text = list(font = 1, cex = 1)
-)
-
-
-#densityplot(imp_fs)
-densityplot(x = imp_fs, 
-            data = ~ H_citytract_NHW_i + chng5pctblk + chng5pctlatino + chng5pctasian + ideology_fill,
-            main = "Density Plots of Imputed and Original Data by Variable\nin the Financial Segregation Dataset",
-            par.settings = my.settings,
-            par.strip.text = list(cex = 1))
-
-```
 
 Since the results of the diagnostic checks were promising, I next proceeded to re-estimate the original model using the multiply imputed datasets, pooling the results to produce final pooled regression coefficients and parameters. The results for the analyses using the racial polarization dataset are presented in tables X1-X3. 
 
@@ -414,9 +399,9 @@ kable(imp_1_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization 
 
 ```
 
-In the second regression, the results are similar. The main coefficient on segregation index has decreased in magnitude, although in these specifications, it remains statistically significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Latino, and median household income have all switched signs.
+In the second regression, the results are similar. The main coefficient on segregation index has decreased in magnitude, it remains statistically significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Latino, and median household income have all switched signs.
 
-```{r results_printing_rp_impute_regressions_2, results = "asis", echo=FALSE}
+```{r results_printing_rp_impute_regressions_2, results = "asis", include = FALSE, eval = FALSE}
 
 # print results of 2nd regression
 
@@ -446,9 +431,9 @@ kable(imp_2_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization 
 
 ```
 
-In the third regression, like in the second, the main coefficient on segregation index has decreased in magnitude but remains significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Asian, median income, and logged population have switched signs. In all three of the specifications, tandard errors reduced slightly using the larger, multiply imputed datasets compared to the original analysis with the original data in @trounstine_segregation_2016. 
+In the third regression, like in the second, the main coefficient on segregation index has decreased in magnitude but remains significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Asian, median income, and logged population have switched signs. In all three of the specifications, standard errors reduced slightly using the larger, multiply imputed datasets compared to the original analysis with the original data in @trounstine_segregation_2016. 
 
-```{r results_printing_rp_impute_regressions_3, results = "asis", echo=FALSE}
+```{r results_printing_rp_impute_regressions_3, results = "asis", include = FALSE, eval = FALSE}
 
 # print results of 3rd regression
 
@@ -478,6 +463,123 @@ kable(imp_3_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization 
 
 ```
 
+```{r Trounstine_rp_models_for_coeff_plot, include = FALSE}
+
+## regression 1 Table 1
+
+# perform a multi-level mixed-effects linear regression of biggest split on the multi-group H index with controls for Herfindahl Diversity Index, % Asian interpolated, % Black interpolated, % Latino interpolated, median household income interpolated, % renters interpolated, percent college grads interpolated, a dummy indicating if there were biracial candidates in the election, a dummy  indicating if the election was nonpartisan, an indicator if the election was a primary, and the log population. The regression also includes fixed effects for year and region and random effects for cities (geo_id2). Diversity is  included because of the claim that more diverse populations will have more heterogeneous political preferences. The other fixed effect control variables are included because they are known to be potentially correlated with segregation. winner == 1 requires that there was a winner in the election.
+
+# regression specification. Apply REML = FALSE. The default for lmer() in R is
+# to optimize the restricted (residual) maximum likelihood (REML) whereas in
+# xtmixed in Stata the default is to optimize the log likelihood (which you can
+# do in lmer() in R by setting REML = FALSE), so this will match the STATA code
+
+m1 <- lmer(biggestsplit ~ H_citytract_multi_i + diversityinterp + pctasianpopinterp + pctblkpopinterp + pctlatinopopinterp + medincinterp + pctrentersinterp +  pctcollegegradinterp + biracial + nonpartisan + primary + logpop + year.f + south + midwest + west + (1 | geo_id2), data = rp_1, REML=FALSE)
+
+## regression 2 Table 1
+
+# Perform the same regression as for Column 1 above but this time regress on the two-group calculation of Theil's H interpolated. It is unclear where the "diversity" variable is coming from, as the only variable related to diversity in the specificed dataset is diversityinterp. This is a problem that will need to be resolved. Essentially, this regression just tests an alternate specification to the first in which the segregation index in defined in terms of two-groups rather than multiple.
+
+m2 <- lmer(biggestsplit ~ H_citytract_NHW_i + diversityinterp + pctasianpopinterp + pctblkpopinterp + pctlatinopopinterp + medincinterp + pctrentersinterp +  pctcollegegradinterp + biracial + nonpartisan + primary + logpop + year.f + south + midwest + west + (1 | geo_id2), data = rp_1, REML=FALSE)
+
+# perform the same regression as for column 2, but now add in a measure of
+# average white political ideology. The point of this is to control for ideology
+# so that the author can separate any effects of segregation from any potential
+# effects of white political ideology. This is important because it is possible
+# that segregation is just a proxy for white conservatism and thus failure to
+# include this variable could lead to ommitted variable bias.
+
+
+m3 <- lmer(biggestsplit ~ H_citytract_NHW_i + diversityinterp + pctasianpopinterp + pctblkpopinterp + pctlatinopopinterp + medincinterp + pctrentersinterp +  pctcollegegradinterp + biracial + nonpartisan + primary + logpop + whiteideology_fill2 + year.f + south + midwest + west + (1 | geo_id2), data = rp_1, REML=FALSE)
+
+m1_estimate_seg <- 0.931958
+m1_se_seg <- 0.394180
+m1_estimate_d <- 0.384535
+m1_se_d <-0.361625
+
+m2_estimate_seg <- 0.755719
+m2_se_seg <- 0.296916 
+m2_est_d <- 0.518369
+m2_se_d <- 0.323161
+
+m3_estimate_seg <- 0.835441
+m3_se_seg <- 0.295759
+m3_est_d <- 0.583684
+m3_se_d <- 0.323488
+  
+
+```
+
+```{r calc_coeff_sds_original_rp_impute, include = FALSE}
+
+model_coeff_rp <- tibble(
+  variable = c("Segregation Index", "Diversity", 
+               "Segregation Index", "Diversity",
+               "Segregation Index", "Diversity", 
+               "Segregation Index", "Diversity",
+                "Segregation Index", "Diversity", 
+               "Segregation Index", "Diversity"),
+  estimate = c(imp_1_rp_sum[2,2], imp_1_rp_sum[3,2],
+               imp_2_rp_sum[2,2], imp_2_rp_sum[3,2],
+               imp_3_rp_sum[2,2], imp_3_rp_sum[3,2],
+               m1_estimate_seg, m1_estimate_d,
+               m2_estimate_seg, m2_est_d,
+               m3_estimate_seg, m3_est_d),
+  std_error = c(imp_1_rp_sum[2,3], imp_1_rp_sum[3,3],
+                imp_2_rp_sum[2,3], imp_2_rp_sum[3,3],
+                imp_3_rp_sum[2,2], imp_3_rp_sum[3,2],
+                m1_se_seg, m1_se_d,
+                m2_se_seg, m2_se_d,
+                m3_se_seg, m3_se_d),
+  model = c( "Imputation 1", "Imputation 1",
+             "Imputation 2","Imputation 2",
+             "Imputation 3", "Imputation 3",
+             "Trounstine 1", "Trounstine 1",
+            "Trounstine 2", "Trounstine 2",
+            "Trounstine 3",  "Trounstine 3"),
+  order = c (2,2,
+             5,5,
+             8,8,
+             1,1,
+             4,4,
+             7,7),
+  color = c("Imputations", "Imputations", "Imputations", 
+            "Imputations", "Imputations", "Imputations", 
+            "Trounstine", "Trounstine", "Trounstine",
+            "Trounstine","Trounstine","Trounstine"),
+  model_num = c("1","1","2","2","3","3","1","1","2","2","3","3")
+)
+
+model_coeff_rp <- model_coeff_rp  %>%
+  mutate(order = as.factor(order))
+
+
+```
+
+
+```{r coef_plot_originals_over_under, echo = FALSE}
+
+
+model_coeff_rp %>%
+  ggplot(aes(x = order, y = estimate, color = color, shape = model_num)) +
+  geom_point()+
+  geom_errorbar(aes(ymin = estimate - 2 * std_error, ymax = estimate + 2 * std_error, width = .2)) +
+  geom_hline(yintercept = 0, color = "red") +
+  facet_wrap(~variable) +
+  ggtitle("Coefficient Plots for Diversity and Segregation Indices Across\nthe Racial Polarization Models")+
+  xlab("Model Specifications") +
+  ylab("Estimate and 95% Confidence Interval") +
+  labs(caption = "This plot demonstrates how the significance of diversity and segregation in predicting public goods spending varies\n with city size. As city populaiton size increases, diversity tends to have less explanatory power for public goods\nspending while segregation has more. The opposite is true when considering city population size decreasing:\nsegregation becomes less important as diversity becomes increasingly important.") +
+  theme_bw()+
+  theme(plot.caption = element_text(hjust = 0),
+        axis.ticks.x = element_blank()) +
+  scale_x_discrete(labels = c("            1", "", "            2", "", "           3", "")) +
+  labs(color = "Model Category", shape = "Specification") +
+  scale_color_manual(values= c("orange", "blue"))
+
+
+```
+
 
 For the financial segregation dataset, we similarly fit each of our 5 imputed datasets to the original models from @trounstine_segregation_2016 using this data and then pool the results for each. The pooled results are presented in tables 4-6.
 
@@ -485,7 +587,6 @@ For the financial segregation dataset, we similarly fit each of our 5 imputed da
 
 
 # Main Analysis 2: Imputations
-
 
 ## regression 1 Table 2
 
@@ -504,7 +605,7 @@ imp_felm1_sum <- summary(pool_imp_felm1)
 
 As a result of the imputation process, I was able to include an additional XXXXXX observations in the analysis. 
 
-The results of the first regression present a stark difference to the results of @trounstine_segregation_2016. Crucially, the effect size of the segregation index on public spending has essentially gone to zero and has become statistically insignificant. Interestingly, the coefficient on the diversity variable has increased substantially from .106 to .759 and has become statistically significant. The sign of the coefficient on percent Asian popultion has switched signs from negative to positive; however, it remains statistically insignificant. 
+The results of the first regression present a stark difference to the results of @trounstine_segregation_2016. Crucially, the effect size of the segregation index on public spending has essentially gone to zero and has become statistically insignificant. Interestingly, the coefficient on the diversity variable has increased substantially from .106 to .759 and has become statistically significant. The results of the second and third specifications were similar, with the coefficient on segregation going almost to zero and becoming insignificant on both. For brevity, these results are not presented. 
 
 
 
@@ -568,7 +669,7 @@ kable(imp_felm1_sum_table_vars, "latex",
 
 ```
 
-```{r results_printing_fs_impute_regressions_2, results = "asis", echo=FALSE, eval = FALSE, invlude = FALSE}
+```{r results_printing_fs_impute_regressions_2, results = "asis", echo=FALSE, eval = FALSE, include = FALSE}
 
 # print results of 2nd regression
 
@@ -596,7 +697,7 @@ kable(imp_felm2_sum_table_vars, "latex",
 
 ```
 
-```{r results_printing_fs_impute_regressions_3, results = "asis", echo=FALSE, eval = FALSE, include = FALSE}
+```{r results_printing_fs_impute_regressions_3, results = "asis", echo = FALSE, eval = FALSE, include = FALSE}
 
 # print results of 3rd regression
 
@@ -748,6 +849,47 @@ imp_under_baqir_1_sum <- summary(pool_fit_under_baqir_1)
 ```
 
 
+```{r run_first_T_mode_for_coeff_plot, include = F}
+# Main Analysis 2
+
+## regression 1 Table 2
+
+# The following is a fixed effects model regression with clustering around
+# geo_id2. It mandates that total census tracts in the city is greater than 1,
+# which we want because our measure of evenness of racial spread is constant for
+# cities with only one tract by our definition (which requires comparing tracts
+# within cities). It also mandates that Direct General Expenditures (DGE) per
+# capita, CPI adjusted is not equal to 0, which would be problematic and
+# indicate a potential data error. This regression regresses the DGE per capita
+# on the the two-group calculation of  Theil's H interpolated. Controls are
+# included for diversity and the % populations of Blacks, Asians, and Latinos to
+# help identify whether it is actually diversity that drives down spending.These
+# demographic controls also help to account for the fact that whites and
+# minorities tend to perfer different levels of government spending in general.
+# This will help isolate the effects of segregation v. other forms of diversity
+# on public spending. Other controls for Median household income, CPI adjusted,
+# percent over 65, percent college grads, percent local government workers, log
+# population help control for additional factors related to segregation and
+# expenditure. Controls for percent renters interpolated and Median household
+# income also help to control for the general wealth of cities, which could be a
+# potential driver of public spending. Fixed effects for cities are also
+# included  so that the author can examine the effect of segregation in the same
+# city over  time, which also helps control for many other factors not otherwise
+# taken into account (such as city age)
+
+# apply the conditions in Stata regression
+
+fin_seg_sub <- fin_seg %>%
+  filter(totaltractsf > 1 | is.na(totaltractsf), dgepercap_cpi != 0) %>%
+  mutate(medinc_cpi = medinc_cpi/1000)
+
+
+# felm(y~x | factor(fe1) + factor(fe2) | 0 | clustervar)
+
+felm1 <- felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopinterp + pctasianpopinterp + pctlatinopopinterp + medinc_cpi + pctlocalgovworker_100 + pctrentersinterp + pctover65 + pctcollegegradinterp + logpop | factor(geo_id2) |0| geo_id2, data = fin_seg_sub)
+```
+
+
 ```{r calc_coeff_sds_original_fs_impute, include = FALSE}
 
 
@@ -778,7 +920,7 @@ model_coeff <- model_coeff %>%
 ```
 
 
-```{r dataset_rows_in_analysis}
+```{r dataset_rows_in_analysis, include = FALSE}
 
 complete_fs <- complete(imp_fs,1) %>%
   filter(!(is.na(dgepercap_cpi)), !(is.na(H_citytract_NHW_i)), !(is.na(diversityinterp)),
@@ -814,7 +956,7 @@ complete_under_baqir <- complete(imp_fs_pop_under_baqir, 1)%>%
 
 
 
-```{r dataset_medians}
+```{r dataset_medians, include = FALSE}
 
 data_info <- tibble(
   dataset = c("fin_imp", "fin_imp_pop_over_baqir", "fin_imp_pop_under_baqir",
@@ -939,11 +1081,11 @@ model_summaries %>%
   geom_point()+
   geom_errorbar(aes(ymin = estimate - 2 * std_error, ymax = estimate + 2 * std_error, width = .2)) +
   geom_hline(yintercept = 0, color = "red") +
-  facet_wrap(~variable, labeller = labeller(variable = coef.labels)) +
+  facet_wrap(~variable) +
   ggtitle("Coefficient Plots for Diversity and White/Non-White Segregation Indices Across\nthe Models")+
   xlab("Models Ordered by Increasing Median Population Size of the Sample") +
   ylab("Estimate and 95% Confidence Interval") +
-  labs(caption = "This plot demonstrates how the significance of diversity and segregation in predicting public\ngoods spending varies with city size. As city populaiton size increases, diversity tends to have\nless explanatory power for public goods spending while segregation has more. The opposite\nis true when considering city population size decreasing: segregation becomes less important\nas diversity becomes increasingly important.") +
+  labs(caption = "This plot demonstrates how the significance of diversity and segregation in predicting public goods spending varies\n with city size. As city populaiton size increases, diversity tends to have less explanatory power\nfor public goods spending while segregation has more. The opposite is true when considering\ncity population size decreasing: segregation becomes less important as diversity becomes\nincreasingly important.") +
   theme_bw()+
   theme(plot.caption = element_text(hjust = 0))
 
@@ -953,7 +1095,7 @@ model_summaries %>%
 
 # Conclusion
 
-Why cities differ in their amount of spending on public goods is an interesting questions that is frequently debated in the literature. @trounstine_segregation_2016 posits that segregation may be an important underlying cause of the underprovsion of public goods. Finding evidence that residential segregation by race increases political partisanship, @trounstine_segregation_2016 argues that residential segregation can increase division and make cooperation amongst competing groups difficult, which results in decreased spending on public goods. The findings of @trounstine_segregation_2016 are particularly important because they suggest that segregation, as defined by many homogeneous neighborhoods within a larger diverse geographical area, is the key factor in disinvestment in public goods. This contradicts previous research which has suggested that levels of diversity were instead most important (see for example @baqir_public_1999 or @hopkins_diversity_2009). While @trounstine_segregation_2016 still represents relatively new reasearch as of 2020, it has yet to be fully vetted by additional research. Furthermore, some research that has been published on the topic since its publication suggests that other factors such as larger inequities in the political system favoring socially powerful groups [@lee_ethnic_2018] or the interaction of income and racial inequality [@an_its_2018] may be more important in explaining public goods provisions. 
+Why cities differ in their amount of spending on public goods is an interesting question that is frequently debated in the literature. @trounstine_segregation_2016 posits that segregation may be an important underlying cause of the underprovsion of public goods. Finding evidence that residential segregation by race increases political partisanship, @trounstine_segregation_2016 argues that residential segregation can increase division and make cooperation amongst competing groups difficult, which results in decreased spending on public goods. The findings of @trounstine_segregation_2016 are particularly important because they suggest that segregation, as defined by many homogeneous neighborhoods within a larger diverse geographical area, is the key factor in disinvestment in public goods. This contradicts previous research which has suggested that levels of diversity were instead most important (see for example @baqir_public_1999 or @hopkins_diversity_2009). While @trounstine_segregation_2016 still represents relatively new reasearch as of 2020, it has yet to be fully vetted by additional research. Furthermore, some research that has been published on the topic since its publication suggests that other factors such as larger inequities in the political system favoring socially powerful groups [@lee_ethnic_2018] or the interaction of income and racial inequality [@an_its_2018] may be more important in explaining public goods provisions. 
 
 I first worked to provide a check on the analysis presented in @trounstine_segregation_2016 by attempting to replicate the work in R. I was able to successfully replicate all of the main results from @trounstine_segregation_2016, with the exception of a few of a few marginal analyses of the complex, multi-level models which, to my knowledge, are currently not supported by available R packages. I was, however, able to successfully replicate these results in Stata.
 
@@ -972,36 +1114,7 @@ It is possible that other mechanisms may be more important in explaining differe
 
 # Appendix
 
-```{r  include = FALSE}
 
-## regression 1 Table 1
-
-# perform a multi-level mixed-effects linear regression of biggest split on the multi-group H index with controls for Herfindahl Diversity Index, % Asian interpolated, % Black interpolated, % Latino interpolated, median household income interpolated, % renters interpolated, percent college grads interpolated, a dummy indicating if there were biracial candidates in the election, a dummy  indicating if the election was nonpartisan, an indicator if the election was a primary, and the log population. The regression also includes fixed effects for year and region and random effects for cities (geo_id2). Diversity is  included because of the claim that more diverse populations will have more heterogeneous political preferences. The other fixed effect control variables are included because they are known to be potentially correlated with segregation. winner == 1 requires that there was a winner in the election.
-
-# regression specification. Apply REML = FALSE. The default for lmer() in R is
-# to optimize the restricted (residual) maximum likelihood (REML) whereas in
-# xtmixed in Stata the default is to optimize the log likelihood (which you can
-# do in lmer() in R by setting REML = FALSE), so this will match the STATA code
-
-m1 <- lmer(biggestsplit ~ H_citytract_multi_i + diversityinterp + pctasianpopinterp + pctblkpopinterp + pctlatinopopinterp + medincinterp + pctrentersinterp +  pctcollegegradinterp + biracial + nonpartisan + primary + logpop + year.f + south + midwest + west + (1 | geo_id2), data = rp_1, REML=FALSE)
-
-## regression 2 Table 1
-
-# Perform the same regression as for Column 1 above but this time regress on the two-group calculation of Theil's H interpolated. It is unclear where the "diversity" variable is coming from, as the only variable related to diversity in the specificed dataset is diversityinterp. This is a problem that will need to be resolved. Essentially, this regression just tests an alternate specification to the first in which the segregation index in defined in terms of two-groups rather than multiple.
-
-m2 <- lmer(biggestsplit ~ H_citytract_NHW_i + diversityinterp + pctasianpopinterp + pctblkpopinterp + pctlatinopopinterp + medincinterp + pctrentersinterp +  pctcollegegradinterp + biracial + nonpartisan + primary + logpop + year.f + south + midwest + west + (1 | geo_id2), data = rp_1, REML=FALSE)
-
-# perform the same regression as for column 2, but now add in a measure of
-# average white political ideology. The point of this is to control for ideology
-# so that the author can separate any effects of segregation from any potential
-# effects of white political ideology. This is important because it is possible
-# that segregation is just a proxy for white conservatism and thus failure to
-# include this variable could lead to ommitted variable bias.
-
-
-m3 <- lmer(biggestsplit ~ H_citytract_NHW_i + diversityinterp + pctasianpopinterp + pctblkpopinterp + pctlatinopopinterp + medincinterp + pctrentersinterp +  pctcollegegradinterp + biracial + nonpartisan + primary + logpop + whiteideology_fill2 + year.f + south + midwest + west + (1 | geo_id2), data = rp_1, REML=FALSE)
-
-```
 
 ```{r results="asis", echo = FALSE}
 
@@ -1031,7 +1144,7 @@ t1 <- stargazer(m1, m2, m3, omit = c("year", "south", "midwest", "west"),
 
 
 
-```{r felm, include = FALSE}
+```{r felm, include = FALSE, eval = FALSE}
 
 # Main Analysis 2
 
@@ -1092,7 +1205,7 @@ felm3 <- felm(dgepercap_cpi ~ H_citytract_NHW_i + diversityinterp + pctblkpopint
 
 ```
 
-```{r main_fp_tables, results = "asis", echo = FALSE}
+```{r main_fp_tables, results = "asis", echo = FALSE, eval = FALSE, include = FALSE}
 
 # create main table for table 3
 
@@ -1395,10 +1508,25 @@ stripplot(imp_fs, chng5pctasian)
 stripplot(imp_fs, ideology_fill)
 
 
+
+
 ```
 
+```{r fs_densityplot, echo = FALSE, eval = FALSE, include = FALSE}
+
+my.settings <- list(
+  par.main.text = list(font = 1, cex = 1)
+)
 
 
+#densityplot(imp_fs)
+densityplot(x = imp_fs, 
+            data = ~ H_citytract_NHW_i + chng5pctblk + chng5pctlatino + chng5pctasian + ideology_fill,
+            main = "Density Plots of Imputed and Original Data by Variable\nin the Financial Segregation Dataset",
+            par.settings = my.settings,
+            par.strip.text = list(cex = 1))
+
+```
 
 
 \newpage
