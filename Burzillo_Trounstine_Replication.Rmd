@@ -298,7 +298,7 @@ meth[c("H_citytract_NHW_i", "chng5pctblk",
 
 # perform the multiple imputations with 5 iterations
 
-imp_fs <- mice(fin_imp, method = meth, maxit = 1)
+imp_fs <- mice(fin_imp, method = meth, maxit = 5)
 
 ```
 
@@ -684,7 +684,7 @@ meth[c("H_citytract_NHW_i", "chng5pctblk",
 
 # perform the multiple imputations with 5 iterations
 
-imp_fs_pop_under_baqir <- mice(fin_imp_pop_under_baqir, method = meth, maxit = 1)
+imp_fs_pop_under_baqir <- mice(fin_imp_pop_under_baqir, method = meth, maxit = 5)
 
 ```
 
