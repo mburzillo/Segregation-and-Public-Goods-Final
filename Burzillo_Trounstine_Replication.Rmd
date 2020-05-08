@@ -3,7 +3,7 @@ title: "Investigating the Underprovision of Public Goods: Does Segregation Matte
 author: "Maria Burzillo"
 date: "5/8/2020"
 output: 
-  bookdown::pdf_document2: 
+  pdf_document: 
     fig_caption: true
 bibliography: final_proj_bib.bib
 link_citations: true
@@ -302,12 +302,11 @@ imp_fs <- mice(fin_imp, method = meth, maxit = 1)
 
 ```
 
-## make sure to talk about the fact that still a large number of values missing for the imputed variables here
 
-Before examining the results of Trounstine's model using the multiply imputed data, I first ran some diagnostic tests on the imputation results to make sure that everything ran as expected. First, I checked the convergence of the algorithm used within mice() by plotting the trace lines as a function of the number of iterations for each of the variables. Then, I visually inspected the distributions of the imputed data in comparison to the original data with density and strip plots. All of these checks suggested that the imputed values were within a plausible range of the data and that their distribution fit the underlying distribution of the data relatively well. The only cases in which there was some cause for concern were for some of the variables with very few missing values in the racial polarization dataset (such as the indicators for region). However, this is more or less to be expected given the small number of imputations performed in these cases. Thus, and especially because there are so few of these values missing in the actual datasets, this was not a major concern. See figures X and X1 to see the density plots of the imputed values overlayed on the density plots of the original variables. The code to generate the rest of the plots and results of the diagnostic tests discussed here are presented in the Appendix. 
+Before examining the results of Trounstine's model using the multiply imputed data, I first ran some diagnostic tests on the imputation results to make sure that everything ran as expected. First, I checked the convergence of the algorithm used within mice() by plotting the trace lines as a function of the number of iterations for each of the variables. Then, I visually inspected the distributions of the imputed data in comparison to the original data with density and strip plots. All of these checks suggested that the imputed values were within a plausible range of the data and that their distribution fit the underlying distribution of the data relatively well. The only cases in which there was some cause for concern were for some of the variables with very few missing values in the racial polarization dataset (such as the indicators for region). However, since there are so few of these values missing in the actual datasets, this was not a major concern. Figure 3 presents the density plots of the imputed values in red overlaid on the density plots of the original variables in blue. The code to generate the rest of the plots and results of the diagnostic tests discussed here are included in the Appendix on GitHub. 
 
 
-```{r rp_densityplot, echo = FALSE}
+```{r rp_densityplot, echo = FALSE, fig.cap = "Figure 3 presents the density plots of the imputed data (red) overlaid on the density plot for the pre-existing data (blue) for all of those variables with missing values in the racial polarization dataset. For the most part, the imputed data seem to fit the pre-existing data relatively well. The only cases in which there is some cause for concern were for some of the variables with very few missing values in the racial polarization dataset (such as the indicators for region). However, since there are so few of these values missing in the actual datasets, this was not a major concern.", fig.pos="H"}
 
 my.settings <- list(
   par.main.text = list(font = 1, cex = 1)
@@ -315,14 +314,14 @@ my.settings <- list(
 
 densityplot(imp_1_rp, main = "Density Plots of Imputed and Original Data by Variable\nin the Racial Polarization Dataset",
       par.settings = my.settings,
-      par.strip.text = list(cex = .7))
+      par.strip.text = list(cex = .6))
 
 
 
 ```
 
 
-Since the results of the diagnostic checks were promising, I next proceeded to re-estimate the original model using the multiply imputed datasets, pooling the results to produce final pooled regression coefficients and parameters. The results for the analyses using the racial polarization dataset are presented in tables X1-X3. 
+Since the results of the diagnostic checks were promising, I next proceeded to re-estimate the original model using the multiply imputed datasets, pooling the results to produce final pooled regression coefficients and parameters. The results of the analysis of the racial polarization dataset using  @trounstine_segregation_2016's first model specification are presented in Tables 1. 
 
 
 ```{r rp_imputations, include = FALSE}
@@ -366,7 +365,6 @@ imp_3_rp_sum <- summary(pool_imp_3_rp)
 
 ```
 
-The results of the model with the new dataset are slightly different in comparison to the original results from Trounstine (2016). With the imputed data, we now have a total of `r nrow(complete(rp_impute))` observations in our model as compared to the original model, which had only 91 observations. Interestingly, while the sign of the coefficient on the main variable of interest, the Theil's H segregation index, is the same and the standard error has decreased slightly, the result has become statisically insignificant and the 95% confidence interval contains zero. Thus while these results still suggest that segregation may be associated with increased political polarization, they confer a lesser degree of certainty than Trounstine's original analysis. The coefficients for % Black population, % Latino population, and median household income have also switched signs, and all coefficients except the indicator for a biracial election are also statistically insignificant, as was the case in the original analysis. The coefficient on the indicator for a primary election, has also changed from being significant in the original analysis to insignificant here. In general, the standard errors on the coefficients have decreased slightly. 
 
 ```{r results_printing_rp_impute_regressions_1, results = "asis", echo=FALSE}
 
@@ -388,7 +386,7 @@ imp_1_rp_sum_table_vars <- tibble(
 kable(imp_1_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization in Segregated Cities: Racial Divide with Multigroup Segregation Index}", booktabs = T) %>%
   row_spec(0, bold = TRUE) %>%
   footnote(general = c("This table shows the results of Trounstine's first model for the effect of segregation on political polarization",
-  "(racial vote divide) using the multi-group Theil's H segregation Index using the new, multiply imputed",
+  "(racial vote divide) using the multi-group Theil's H Segregation Index using the new, multiply imputed",
   "datasets. The sign of the coefficient on the main variable of interest, the segregation index, is the same, but",
   "the result has become statisically insignificant with the 95% confidence interval containing zero. Thus",
   "while these results still suggest that segregation may be associated with increased political polarization,",
@@ -401,10 +399,10 @@ kable(imp_1_rp_sum_table_vars, "latex", caption = "\\textbf{Racial Polarization 
 
 ```
 
-In the second regression, the results are similar. The main coefficient on segregation index has decreased in magnitude, it remains statistically significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Latino, and median household income have all switched signs.
+The results of the model with the new dataset are slightly different in comparison to the original results from Trounstine (2016). With the imputed data, we now have a total of `r nrow(complete(rp_impute))` observations in our model as compared to the original model, which had only 91 observations. Interestingly, while the sign of the coefficient on the main variable of interest, the Theil's H segregation index, is the same and the standard error has decreased slightly, the result has become statisically insignificant and the 95% confidence interval contains zero. Thus while these results still suggest that segregation may be associated with increased political polarization, they confer a lesser degree of certainty than Trounstine's original analysis. The coefficients for % Black population, % Latino population, and median household income have also switched signs, and all coefficients except the indicator for a biracial election are also statistically insignificant, as was the case in the original analysis. The coefficient on the indicator for a primary election, has also changed from being significant in the original analysis to insignificant here. In general, the standard errors on the coefficients have decreased slightly. 
 
+In the second and third model specifications, which use the two-group Theil's H Segregation Index, the results were similar. The main coefficient on segregation index decreased in magnitude, although it remained statistically significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Latino, and median household income have all switched signs. The other coefficients except for the biracial indicator are insignificant, and standard errors have reduced slightly in these specifications compared to the original analysis in Trounstine (2016). As a visual comparison of the model coefficients, I include coefficient plots for the diversity and segregation index variables as Figure 4. From this plot, it is clear that across all of the models, the coefficient on diversity is positive and insignificant, while the coefficient on the segregaiton index is positive and, in most cases, significant.
 
-In the third regression, like in the second, the main coefficient on segregation index has decreased in magnitude but remains significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Asian, median income, and logged population have switched signs. In all three of the specifications, standard errors reduced slightly using the larger, multiply imputed datasets compared to the original analysis with the original data in @trounstine_segregation_2016. 
 
 
 ```{r Trounstine_rp_models_for_coeff_plot, include = FALSE}
@@ -471,7 +469,7 @@ model_coeff_rp <- tibble(
                m3_estimate_seg, m3_est_d),
   std_error = c(imp_1_rp_sum[2,3], imp_1_rp_sum[3,3],
                 imp_2_rp_sum[2,3], imp_2_rp_sum[3,3],
-                imp_3_rp_sum[2,2], imp_3_rp_sum[3,2],
+                imp_3_rp_sum[2,3], imp_3_rp_sum[3,3],
                 m1_se_seg, m1_se_d,
                 m2_se_seg, m2_se_d,
                 m3_se_seg, m3_se_d),
@@ -501,31 +499,35 @@ model_coeff_rp <- model_coeff_rp  %>%
 ```
 
 
-```{r coef_plot_rp, echo = FALSE}
+```{r coef_plot_rp, echo = FALSE, fig.pos="H"}
 
 
 model_coeff_rp %>%
   ggplot(aes(x = order, y = estimate, color = color, shape = model_num)) +
   geom_point()+
   geom_errorbar(aes(ymin = estimate - 2 * std_error, ymax = estimate + 2 * std_error, width = .2)) +
-  geom_hline(yintercept = 0, color = "red") +
+  geom_hline(yintercept = 0, color = "black") +
   facet_wrap(~variable) +
-  ggtitle("Coefficient Plots for Diversity and Segregation Indices Across\nthe Racial Polarization Models")+
+  ggtitle("Coefficient Plots for Diversity and Segregation Indices Across the Racial\nPolarization Models")+
   xlab("Model Specifications") +
   ylab("Estimate and 95% Confidence Interval") +
-  labs(caption = "This plot demonstrates how the significance of diversity and segregation in predicting public goods spending varies\n with city size. As city populaiton size increases, diversity tends to have less explanatory power for public goods\nspending while segregation has more. The opposite is true when considering city population size decreasing:\nsegregation becomes less important as diversity becomes increasingly important.") +
+  labs(caption = "Figure 4: This plot demonstrates how the magnitude and significance of the coefficients on diversity and the segregation\nindex vary among the models. Across all of the models, the coefficient on diversity is positive and insignificant. The\ncoefficient on the segregation index is also consistently positive across the models. In all 3 of the model specifications\nfrom Trounstine (2016) and in 2 of the 3 specifications using the multiply imputed data, the coefficient on the segregation\nindex is significant.") +
   theme_bw()+
   theme(plot.caption = element_text(hjust = 0),
         axis.ticks.x = element_blank()) +
   scale_x_discrete(labels = c("            1", "", "            2", "", "           3", "")) +
   labs(color = "Model Category", shape = "Specification") +
-  scale_color_manual(values= c("orange", "blue"))
+  scale_color_manual(values= c("red", "blue"))
 
 
 ```
 
 
-For the financial segregation dataset, we similarly fit each of our 5 imputed datasets to the original models from @trounstine_segregation_2016 using this data and then pool the results for each. The pooled results are presented in tables 4-6.
+For the financial segregation dataset, I similarly fit each of our 5 imputed datasets to the original models from @trounstine_segregation_2016 using this data and then pool the results for each. As a result of the imputation process, I was able to include an additional `r 73119 - 13742` observations in the analysis, increasing the sample size by %`r round((73119 - 13742)/ 13742*100,0)`. While this is an improvement, I was unable to impute all of the missing values because of the large percentage of missing values in the original dataset, which limited the performance of the algorithm, and due to time and computing constraints for this project. 
+
+
+
+
 
 ```{r fs_imputed_main_1st_specification, include = FALSE}
 
@@ -546,12 +548,7 @@ imp_felm1_sum <- summary(pool_imp_felm1)
 
 ```
 
-
-As a result of the imputation process, I was able to include an additional XXXXXX observations in the analysis. 
-
-The results of the first regression present a stark difference to the results of @trounstine_segregation_2016. Crucially, the effect size of the segregation index on public spending has essentially gone to zero and has become statistically insignificant. Interestingly, the coefficient on the diversity variable has increased substantially from .106 to .759 and has become statistically significant. The results of the second and third specifications were similar, with the coefficient on segregation going almost to zero and becoming insignificant on both. For brevity, these results are not presented. 
-
-
+The results of the first specification of model using the multiply imputed financial segregation data present a stark difference from the results of @trounstine_segregation_2016. Crucially, the effect size of the segregation index on public spending has essentially gone to zero and become statistically insignificant. Interestingly, the coefficient on the diversity variable has increased substantially from .106 to .759 and has become statistically significant. The results of the second and third specifications were similar, with the coefficient on segregation going almost to zero and becoming insignificant on both. For brevity, the results of the second and third specifications are not presented, but they are available in the Appendix on GitHub. 
 
 
 ```{r results_printing_fs_impute_regressions_1, results = "asis", echo=FALSE}
@@ -585,10 +582,10 @@ kable(imp_felm1_sum_table_vars, "latex",
 ```
 
 
-Because these results differed to such a degree from @trounstine_segregation_2016's original findings, I performed some checks on the data included in each analysis. I discovered that @trounstine_segregation_2016 excluded most cities below a certain population size because of the nature of the paper's listwise deletion. It may be that small cities are more likely to be missing data, and thus they were more likely to be dropped in @trounstine_segregation_2016's analysis. Referring back to @baqir_public_1999, I decided to divide the orginal sample based upon the populaiton cutoff for cities used in that paper, which determined that the populaiton must be above 25,000 people for an area to be considered a city. Splitting the financial segregation dataset into two datasets, one above and one below the 25,000 population cutoff, I then imputed missing values and used the multiply imputed datasets in Trounstine's original models. 
+Because these results differed to such a degree from @trounstine_segregation_2016's original findings, I performed some checks on the data included in each analysis. I discovered that @trounstine_segregation_2016 excluded most cities below a certain population size because of the nature of the paper's listwise deletion. It may be that small cities are more likely to be missing data, and thus they were more likely to be dropped in @trounstine_segregation_2016's analysis. Referring back to @baqir_public_1999, I decided to divide the orginal sample based upon the populaiton cutoff for cities used in that paper, which determined that the populaiton must be above 25,000 people for an area to be considered a city. Splitting the financial segregation dataset in two, one dataset above and one below the 25,000 population cutoff, I then again imputed missing values for each and used the multiply imputed datasets in Trounstine's original models. 
 
 
-Figure XXX displays the populaiton distributions used in each of these analyses. The figure makes it clear that the observations included in @trounstine_segregation_2016's original analysis were not representative of the original datasample with the missing values, as most of the cities with lower populations were excluded as a result of the list-wise data deletion. While the dataset generated from the data imputation on the whole sample also has a different distribution for city populaiton, the range of the data seems to be much more representative of the overall data range in comparison to the @trounstine_segregation_2016 sample. For comparison, I also include the distributions of the multiply imputed datasets above and below the 25,000 populaiton cutoff. For cities above the cutoff, the city population distribution is similar to the distribution in @trounstine_segregation_2016. 
+Figure 5 displays the population distributions used in each of these analyses. The figure makes it clear that the observations included in @trounstine_segregation_2016's original analysis were not representative of the original data sample with the missing values, as most of the cities with lower populations were excluded as a result of the list-wise data deletion. While the dataset generated from the data imputation on the whole sample also has a different distribution for city populaiton, the range of the data seems to be much more representative of the overall data range in comparison to the @trounstine_segregation_2016 sample. For comparison, I also include the distributions of the multiply imputed datasets above and below the 25,000 populaiton cutoff. For cities above the cutoff, the city population distribution is similar to the distribution in @trounstine_segregation_2016. 
 
 
 ```{r population_over_Baqir, include = FALSE}
@@ -767,7 +764,11 @@ model_coeff <- tibble(
   model = c( "fin_imp_pop_under_baqir", "fin_imp_pop_under_baqir",
              "fin_imp", "fin_imp",
             "fin_dge", "fin_dge",
-            "fin_imp_pop_over_baqir", "fin_imp_pop_over_baqir")
+            "fin_imp_pop_over_baqir", "fin_imp_pop_over_baqir"),
+  color = c("Imputations", "Imputations",
+            "Imputations", "Imputations",
+            "Trounstine (2016)", "Trounstine (2016)",
+            "Imputations", "Imputations")
 )
 
 model_coeff <- model_coeff %>%
@@ -885,7 +886,7 @@ pop_hist_data %>%
   facet_wrap(~Analysis) +
   coord_cartesian(xlim = c(0,15)) +
   ggtitle("Histograms of Log Population of City Observations Included in the\nVarious Regression Analyses") +
-  labs(caption = "This figure makes clear the differences in city size (in terms of population) among the different analyses.\n It is clear that the listwise deletion of observations with missing values resulted in a sample that almost entirely\nconsisted of larger cities in Trounstine (2016). The distribution of city population in Trounstine (2016)\nmore closely resembles the distribution of the original sample with a greater than 25,000 population\ncutoff imposed than the original sample. The red lines indicate the median log population in each sample.") +
+  labs(caption = "Figure 5: This figure makes clear the differences in city size (in terms of population) among the different analyses.\n It is clear that the listwise deletion of observations with missing values resulted in a sample that almost entirely\nconsisted of larger cities in Trounstine (2016). The distribution of city population in Trounstine (2016)\nmore closely resembles the distribution of the original sample with a greater than 25,000 population\ncutoff imposed than the original sample. The red lines indicate the median log population in each sample.") +
   ylab("Count") +
   xlab("Log Population") +
   theme_bw() +
@@ -894,7 +895,7 @@ pop_hist_data %>%
 
 ```
 
-The results of the models run with the multiply imputed datasets above and below the cutoff are presented in the following two tables.
+The results of the models run with the multiply imputed datasets above and below the cutoff are presented in the following two tables. In Table 3, the results for cities above the 25,000 person population cutoff are displayed. As in @trounstine_segregation_2016, the coefficient on the segregation index is negative and highly significant while the coefficient on diversity is insignificant and the magnitude of the coefficient is close to zero. In Table 4, the results for cities below the 25,000 person populaiton cutoff are displayed. Here, the coefficient on diversity is positive and significant while the coefficient on the segregation index is much smaller and insignificant. 
 
 ```{r over_baqir_t1, echo = FALSE}
 
@@ -914,14 +915,11 @@ kable(imp_over_baqir_1_sum_table_vars, "latex",
       caption = "\\textbf{Effect of Segregation on Overall per Capita Direct General City Expenditures: Imputed Data for Cities with Populations of 25,000+}",
       booktabs = T) %>%
     row_spec(0, bold = TRUE) %>%
-  footnote(general = c("This table shows the results of Trounstine's third model for the effect of segregation on political polarization",
-  "(racial vote divide) using the two-group Theil's H segregation Index and including controls for ideology",
-  "using the new, multiply imputed datasets. Compared to Trounstine's original results, the main coefficient on",
-  "segregation index has decreased in magnitude although, it remains statistically significant. The other",
-  "coefficients except for the biracial indicator are insignificant, and the coefficients on percent Asian and",
-  "Black have switched signs. Standard errors have also reduced slightly in these specifications compared to",
-  "the original analysis in Trounstine (2016)."),
-           general_title = "Table 6:") %>%
+  footnote(general = c("Table 3: This table shows the results of Trounstine's model examining the effect of segregation on overall",
+  "per capita direct general expenditure using the multiply imputed dataset for cities with populations above",
+  "25,000 people. As in Trounstine (2016), the effect of segregation on public goods spending is large, negative,",
+  "and significant while the effect of diversity is small in magnitude and insignificant."),
+           general_title = "Table 3:") %>%
   kable_styling(full_width = TRUE)
 
 ```
@@ -942,39 +940,42 @@ imp_under_baqir_1_sum_table_vars <- tibble(
 )
 
 kable(imp_under_baqir_1_sum_table_vars, "latex",
-      caption = "\\textbf{Effect of Segregation on Overall per Capita Direct General City Expenditures: Imputed Data for Cities with Populations of 25,000+}",
+      caption = "\\textbf{Effect of Segregation on Overall per Capita Direct General City Expenditures: Imputed Data for Cities with Populations of Less Than 25,000}",
       booktabs = T) %>%
     row_spec(0, bold = TRUE) %>%
-  footnote(general = c("This table shows the results of Trounstine's third model for the effect of segregation on political polarization",
-  "(racial vote divide) using the two-group Theil's H segregation Index and including controls for ideology",
-  "using the new, multiply imputed datasets. Compared to Trounstine's original results, the main coefficient on",
-  "segregation index has decreased in magnitude although, it remains statistically significant. The other",
-  "coefficients except for the biracial indicator are insignificant, and the coefficients on percent Asian and",
-  "Black have switched signs. Standard errors have also reduced slightly in these specifications compared to",
-  "the original analysis in Trounstine (2016)."),
-           general_title = "Table 6:") %>%
+  footnote(general = c("Table 4: This table shows the results of Trounstine's model examining the effect of segregation on overal",
+  "per capita direct general expenditure using the multiply imputed dataset for cities with populations below",
+  "25,000 people. As in Trounstine (2016), the effect of segregation on public goods spending is large, negative,",
+  "and significant while the effect of diversity is small in magnitude and insignificant."),
+           general_title = "Table 4:") %>%
   kable_styling(full_width = TRUE)
 
 ```
 
 
-As a summary of all of the model results for the two main coefficients of interest, segregation index and diversity, a coefficient plot is presented in Figure XXX, with the models ordered by increasing median log population size of the sample on the x-axis. Looking first at the coefficients for diversity, the two models with low median city populaiton size have significant, positive coefficients, while the models with the larger median city populations have insignificant coefficients. This suggestst that diversity is an important estimator of public goods spending for small, but not necessarily for large, cities. Next, looking at the plot for the segregation index, we see the oppposite effect. For the models where the median city population sizes were small, the coefficient on segregaiton is insignificant. However, for the two models with larger median city populations, the coefficients were significant and negative. This suggests that for small cities, segregation is not a very good estimator of public goods spending, but when cities are larger, increases in a city's segregation index are associated with decreases in public goods spending. 
+As a summary of all of the model results for the two main coefficients of interest, segregation index and diversity, a coefficient plot is presented as Figure XXX, with the models ordered by increasing median log population size of the sample on the x-axis. Looking first at the coefficients for diversity, the two models with low median city populaiton size have significant, positive coefficients, while the models with the larger median city populations have insignificant coefficients. This suggestst that diversity is an important estimator of public goods spending for small, but not necessarily for large, cities. Next, looking at the plot for the segregation index, we see the oppposite effect. For the models where the median city population sizes were small, the coefficient on segregaiton is insignificant. However, for the two models with larger median city populations, the coefficients were significant and negative. This suggests that for small cities, segregation is not a very good estimator of public goods spending, but when cities are larger, increases in a city's segregation index are associated with decreases in public goods spending. 
 
 ```{r coef_plot_originals_over_under, echo = FALSE}
 
+model_summaries <- model_summaries %>%
+  mutate(Model = c("Imputed, < 25k", "Imputed, < 25k", 
+                   "Imputed, Whole Sample", "Imputed, Whole Sample",
+                   "Trounstine (2016)", "Trounstine (2016)",
+                   "Imputed, > 25k", "Imputed, > 25k"))
 
 model_summaries %>%
-  ggplot(aes(x = median, y = estimate)) +
+  ggplot(aes(x = median, y = estimate, color = Model)) +
   geom_point()+
   geom_errorbar(aes(ymin = estimate - 2 * std_error, ymax = estimate + 2 * std_error, width = .2)) +
-  geom_hline(yintercept = 0, color = "red") +
+  geom_hline(yintercept = 0, color = "black") +
   facet_wrap(~variable) +
-  ggtitle("Coefficient Plots for Diversity and White/Non-White Segregation Indices Across\nthe Models")+
+  ggtitle("Coefficient Plots for Diversity and White/Non-White Segregation Indices\nAcross the Models")+
   xlab("Models Ordered by Increasing Median Population Size of the Sample") +
   ylab("Estimate and 95% Confidence Interval") +
-  labs(caption = "This plot demonstrates how the significance of diversity and segregation in predicting public goods spending varies\n with city size. As city populaiton size increases, diversity tends to have less explanatory power\nfor public goods spending while segregation has more. The opposite is true when considering\ncity population size decreasing: segregation becomes less important as diversity becomes\nincreasingly important.") +
+  labs(caption = "This plot demonstrates how the significance of diversity and segregation in predicting public goods spending varies\nwith city size. As city populaiton size increases, diversity tends to have less explanatory power for public goods\nspending while segregation has more. The opposite is true when considering city population size decreasing:\nsegregation becomes less important as diversity becomes increasingly important.") +
   theme_bw()+
-  theme(plot.caption = element_text(hjust = 0))
+  theme(plot.caption = element_text(hjust = 0)) +
+  labs(color = "Model Category")
 
 
 ```
@@ -982,19 +983,35 @@ model_summaries %>%
 
 # Conclusion
 
-Why cities differ in their amount of spending on public goods is an interesting question that is frequently debated in the literature. @trounstine_segregation_2016 posits that segregation may be an important underlying cause of the underprovsion of public goods. Finding evidence that residential segregation by race increases political partisanship, @trounstine_segregation_2016 argues that residential segregation can increase division and make cooperation amongst competing groups difficult, which results in decreased spending on public goods. The findings of @trounstine_segregation_2016 are particularly important because they suggest that segregation, as defined by many homogeneous neighborhoods within a larger diverse geographical area, is the key factor in disinvestment in public goods. This contradicts previous research which has suggested that levels of diversity were instead most important (see for example @baqir_public_1999 or @hopkins_diversity_2009). While @trounstine_segregation_2016 still represents relatively new reasearch as of 2020, it has yet to be fully vetted by additional research. Furthermore, some research that has been published on the topic since its publication suggests that other factors such as larger inequities in the political system favoring socially powerful groups [@lee_ethnic_2018] or the interaction of income and racial inequality [@an_its_2018] may be more important in explaining public goods provisions. 
+Why cities differ in their amount of spending on public goods is an interesting question that is frequently debated in the literature. @trounstine_segregation_2016 posits that segregation may be an important underlying cause of the underprovsion of public goods. Finding evidence that residential segregation by race increases political partisanship, @trounstine_segregation_2016 argues that residential segregation can increase division and make cooperation amongst competing groups difficult, which results in decreased spending on public goods. The findings of @trounstine_segregation_2016 are particularly important because they suggest that segregation, as defined by many homogeneous neighborhoods within a larger diverse geographical area, is the key factor in disinvestment in public goods. This contradicts previous research which has suggested that levels of diversity were instead most important (see for example @baqir_public_1999 or @hopkins_diversity_2009).
 
-I first worked to provide a check on the analysis presented in @trounstine_segregation_2016 by attempting to replicate the work in R. I was able to successfully replicate all of the main results from @trounstine_segregation_2016, with the exception of a few of a few marginal analyses of the complex, multi-level models which, to my knowledge, are currently not supported by available R packages. I was, however, able to successfully replicate these results in Stata.
+In this paper, I first worked to provide a check on the analysis presented in @trounstine_segregation_2016 by attempting to replicate the work in R. I was able to successfully replicate all of the main results, with the exception of a few of a few marginal analyses of the complex, multi-level models which, to my knowledge, are currently not supported by available R packages. I was, however, able to successfully replicate these results in Stata.
 
-As an additional robustness check I also tested the models in @trounstine_segregation_2016 by re-running them with additional data that I imputed from missing values in the original datasets. The large number of missing values in both of the datasets used in @trounstine_segregation_2016's main analysis created a concern for potential bias in the original results and a lack of representativeness due to the large amount of data excluded from the regression analysis due to missing values. Thus, I used the mice package in R to create multiply imputed datasets, upon which I re-ran the models and pooled the results to generate the final model coefficients and parameters. 
+I then tested the models in @trounstine_segregation_2016 by re-running them with additional data that I imputed from missing values in the original datasets. The large number of missing values in both of the datasets used in @trounstine_segregation_2016's main analysis created a concern for potential bias in the original results and for a lack of representativeness due to the large proportion of observations excluded from the regression analysis because of missing data. Using the mice package in R, I created multiply imputed datasets, upon which I re-ran the models and pooled the results to generate the final model coefficients and parameters. 
 
-The results of the data imputation exercise differed between the two datasets. For the analyses using the smaller, racial polarization dataset, the results from the imputed data resulted in a smaller magnitude of the coefficient on the main independent variable, and also made it statistically insignificant in the main model specification. This suggests that the segregation index may not have as strong of a positive association with political polarization as @trounstine_segregation_2016 suggests. Nevertheless, the imputation exercise generally supports the main ideas in this part of Trounstine's analysis.
+The results of the data imputation exercise differed between the two datasets. For the analyses using the smaller, racial polarization dataset, re-running the models with the imputed data resulted in a smaller magnitude of the coefficient on the segregation index, and also made it statistically insignificant in the main model specification. This suggests that the segregation index may not have as strong of a positive association with political polarization as @trounstine_segregation_2016 suggests, but in general, the imputation exercise supportted the main conclusions of Trounstine's analysis.
 
-On the other hand, for the analyses using the much larger financial segregation dataset, the results of the models using the multiply imputed data sharply contrasted the results of @trounstine_segregation_2016, suggesting that diversity, and not segregation, was the best explanatory variable for public goods spending across cities. While these results originally seemed quite contradictory, I was able reconcile this finding by discovering that the results of @trounstine_segregation_2016 seem to be only really representative of larger cities. By dropping all observations in the original data with missing values for key variables, it seems that @trounstine_segregation_2016 inadvertently restricted their sample to almost entirely larger cities (above 25,000 residents) whereas the full sample consisted of cities that had smaller populaitons. To test the hypothesis that diversity is more important for predicting public goods spending for small cities while segregation is more important for predicting public goods spending for larger cities, I divided the original dataset into two subsets based on the city classificaiton criteria used in @baqir_public_1999 that cities must have a population of at least 25,000 people. I then multiply imputed the missing values for each data subset and re-ran the models. I found that the results presented initial evidence in support of my hypothesis. for the cities below the 25,000 person populaiton cutoff, the coefficient for diversity was positive and significant while the coefficient for the segregation index was insignificant. For cities above the 25,000 person cutoff, the results were very similar to the results found in @trounstine_segregation_2016: the coefficient for diversity was insignificant, but the coefficient for the segregation index was significant and negative. 
+On the other hand, for the analyses using the much larger financial segregation dataset, the results of the models using the multiply imputed data sharply contrasted the results of @trounstine_segregation_2016, suggesting that diversity, and not segregation, was the best explanatory variable for public goods spending across all cities. While these results originally seemed quite contradictory, I was able reconcile this finding by discovering that the results of @trounstine_segregation_2016 seem to be only really representative of larger cities. By dropping all observations in the original data with missing values for variables included in the regressions, it seems that @trounstine_segregation_2016 inadvertently restricted their sample to almost entirely larger cities (above 25,000 residents) whereas the full sample consisted of cities that had smaller populaitons on average. To test the hypothesis that diversity is more important for predicting public goods spending for small cities while segregation is more important for predicting public goods spending for larger cities, I divided the original dataset into two subsets based on the city classificaiton criteria used in @baqir_public_1999 that cities must have a population of at least 25,000 people. I then multiply imputed the missing values for each data subset and re-ran the models. I found that the results presented initial evidence in support of my hypothesis. For the cities below the 25,000 person population cutoff, the coefficient for diversity was positive and significant while the coefficient for the segregation index was insignificant. For cities above the 25,000 person cutoff, the results were very similar to the results found in @trounstine_segregation_2016: the coefficient for diversity was insignificant, but the coefficient for the segregation index was significant and negative. 
 
-The replication exercise and the robustness check of @trounstine_segregation_2016's model using multiply imputed data provide additional evidence that residential racial segregation is associated with political polarization. Furthermore, I find evidence that supports the finding of @trounstine_segregation_2016 that increases in segregation are associated with decreases in public goods spending; however, I find that this is only the case for larger cities. In contrast to the argument made by @trounstine_segregation_2016, I find that, for small cities, diversity, not segregation, seems to be the most important explanatory variable for public goods spending. One potential explanation for this result could be that when cities become too small, the sort of segregation by neighborhood described in @trounstine_segregation_2016 as a diverse city broken down into homogenous, segregated neighborhoods becomes hard to maintain. When populaiton sizes are small, segregation may become difficult and inter-racial interactions may become more common, leading diversity to be more indicative of a degree of integration. This provides a possible explanation as to why the coefficient on diversity was positive for very small cities, as these "cities" may function more closely as neighborhoods (many of them with populaitons ranging from X-X thousand); as discussed in the literature review, diversity at the neighborhood level is associated with lower levels of political polarization (Oliver 2010) and thus we would expect these areas to have higher levels of public goods spending according to the ideas of @trounstine_segregation_2016. As cities become larger and larger, however, comprehensive segregation becomes more attainable. Thus, segregation, not diversity, becomes a better indicator of inter-racial harmony and cooperation and thus the best explanatory variable for public goods spending. 
+```{r}
 
-It is possible that other mechanisms may be more important in explaining differences in spending across cities on public goods. For example, it could be that there is an important interaction effect between income and segregation, as others have previously suggested, or there could be some other intervening mechanism or a confounding variable that is leading to the negative association between segregation and lower spending on public goods. @trounstine_segregation_2016 has identified an important relationship between segregation and the provision of public goods. However, my analysis suggests that further research is needed to assess for which cities this relationship holds. At what city size or population density does segregaiton become more relevant than diversity? And what implications does this have for how public policy should be designed and implemented to address these issues? These are important questions that merit further investigation, because by improving our ability to identify, understand, and address its root causes, we may be able to better address the underprovision of public goods, which may inhibit social mobility and unfairly disadvantage certain groups.
+range(fin_seg$population)
+
+quantile(fin_seg$population, c(.25, .5, .75, .80, .90, 1))
+
+median_fin_seg_pop <- median(fin_seg$population)
+
+range(fin_dge$population)
+
+quantile(fin_dge$population, c(.25, .5, .75, .80, .90, 1))
+
+median(fin_dge$population)
+
+```
+
+The replication exercise and the robustness check of @trounstine_segregation_2016's model using multiply imputed data provide additional evidence that residential racial segregation is associated with political polarization. Furthermore, I find evidence that supports the finding of @trounstine_segregation_2016 that increases in segregation are associated with decreases in public goods spending; however, I find that this is only the case for larger cities. In contrast to the argument made by @trounstine_segregation_2016, I find that, for small cities, diversity, not segregation, seems to be the most important explanatory variable for public goods spending. One potential explanation for this result could be that when cities become too small, the sort of segregation by neighborhood described in @trounstine_segregation_2016 as a diverse city broken down into homogenous, segregated neighborhoods becomes hard to maintain. When populaiton sizes are small, segregation may become difficult and inter-racial interactions may become more common, leading diversity to be more likely associated with integration and increased inter-racial contact. This provides a possible explanation as to why the coefficient on diversity was positive for very small cities, as these "cities" may function more closely as neighborhoods. This is plausible given that many of the "cities" in the original financial segregation dataset in @trounstine_segregation_2016 were extremely small, with the overall median city population being `r median_fin_seg_pop`. As discussed in the literature review, diversity at the neighborhood level is associated with lower levels of political polarization (Oliver 2010) and thus we would expect these areas to have higher levels of public goods spending according to the logic of @trounstine_segregation_2016. As cities become larger and larger, however, comprehensive segregation becomes more attainable. Thus, segregation, not diversity, becomes a better indicator of inter-racial harmony and cooperation and thus the best explanatory variable for public goods spending. 
+
+The underprovision of public goods may inhibit social mobility and unfairly disadvantage certain groups. @trounstine_segregation_2016 has identified an important relationship between segregation and the provision of public goods, which I suggest holds for larger cities, but not necessarily for smaller ones. Given the evidence presented here that the importance of segregation and diversity as predictors of the underprovision of public goods may differ based on city size, further research is needed to assess the nuance of these relationships. For example, at what city size or population does segregation become more relevant than diversity? And what implications does this have for how public policy should be designed and implemented to address these issues? In answering some of these questions, we may be able to improve our ability to identify, understand, and address the root causes of the underprovision of public goods. 
 
 
 \newpage
