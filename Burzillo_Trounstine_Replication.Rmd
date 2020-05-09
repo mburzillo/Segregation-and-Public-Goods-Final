@@ -46,8 +46,8 @@ set.seed(100)
 
 # import both datasets
 
-rp <- read_dta("racial_polarization_winners.dta")
-fin_seg<- read_dta("fin_seg.dta")
+rp <- read_dta("Trounstine_files/racial_polarization_winners.dta")
+fin_seg<- read_dta("Trounstine_files/fin_seg.dta")
 
 
 ```
