@@ -1044,7 +1044,7 @@ t1 <- stargazer(m1, m2, m3, omit = c("year", "south", "midwest", "west"),
 ```
 
 ### Figure 7
-![This is the original table displaying the results of the models for the effects of residential segregation on political polarization from page 713 of @trounstine_segregation_2016. My replication of these results can be found in Table 5 in the Appendix of this paper.](table_1.png)
+![This is the original table displaying the results of the models for the effects of residential segregation on political polarization from page 713 of @trounstine_segregation_2016. My replication of these results can be found in Table 5 in the Appendix of this paper.](Trounstine_files/table_1.png)
 
 
 
