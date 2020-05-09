@@ -1,4 +1,4 @@
-# Final-Project-Final-Version
+# Readme for the Replication Project of Trounstine (2016)
 
 This repo contains files related to my GOV1006 replication project of Troustine's *Segregation and Inequality in Public Goods* (2016). My final paper is included in pdf form as "Burzillo_Trounstine_Replication.pdf."
 
