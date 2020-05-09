@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  8 MAY 2020 14:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  8 MAY 2020 19:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1102,7 +1102,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 143.
 [2] [3] [4] [5]
-<Burzillo_Trounstine_Replication_files/figure-latex/rp_aggr_plot-1.pdf, id=72, 
+<Burzillo_Trounstine_Replication_files/figure-latex/rp_aggr_plot-1.pdf, id=76, 
 423.5825pt x 347.2975pt>
 File: Burzillo_Trounstine_Replication_files/figure-latex/rp_aggr_plot-1.pdf Gra
 phic file (type pdf)
@@ -1111,7 +1111,7 @@ Package pdftex.def Info: Burzillo_Trounstine_Replication_files/figure-latex/rp_
 aggr_plot-1.pdf used on input line 366.
 (pdftex.def)             Requested size: 423.59439pt x 347.30724pt.
 [6]
-<Burzillo_Trounstine_Replication_files/figure-latex/fin_aggr_plot-1.pdf, id=77,
+<Burzillo_Trounstine_Replication_files/figure-latex/fin_aggr_plot-1.pdf, id=81,
  481.8pt x 354.32375pt>
 File: Burzillo_Trounstine_Replication_files/figure-latex/fin_aggr_plot-1.pdf Gr
 aphic file (type pdf)
@@ -1135,13 +1135,13 @@ l.414
        <./Burzillo_Trounstine_Replication_files/figure-latex/fin_aggr_plot-1.pd
 f>]
 <Burzillo_Trounstine_Replication_files/figure-latex/rp_densityplot-1.pdf, id=10
-3, 454.69875pt x 297.11pt>
+7, 453.695pt x 297.11pt>
 File: Burzillo_Trounstine_Replication_files/figure-latex/rp_densityplot-1.pdf G
 raphic file (type pdf)
 <use Burzillo_Trounstine_Replication_files/figure-latex/rp_densityplot-1.pdf>
 Package pdftex.def Info: Burzillo_Trounstine_Replication_files/figure-latex/rp_
 densityplot-1.pdf used on input line 437.
-(pdftex.def)             Requested size: 454.70456pt x 297.1138pt.
+(pdftex.def)             Requested size: 453.6939pt x 297.10927pt.
 [9] [10pdfTeX warning (ext4): destination with the same identifier (name{figure
 .3}) has been already used, duplicate ignored
 
@@ -1155,7 +1155,7 @@ Overfull \hbox (13.7445pt too wide) in paragraph at lines 470--500
  []
 
 
-<Burzillo_Trounstine_Replication_files/figure-latex/coef_plot_rp-1.pdf, id=123,
+<Burzillo_Trounstine_Replication_files/figure-latex/coef_plot_rp-1.pdf, id=127,
  457.71pt x 316.18124pt>
 File: Burzillo_Trounstine_Replication_files/figure-latex/coef_plot_rp-1.pdf Gra
 phic file (type pdf)
@@ -1170,7 +1170,7 @@ has been already used, duplicate ignored
                                                   \fi \fi 
 l.515 ...figure-latex/coef_plot_rp-1} \end{center}
                                                   ]
-Overfull \hbox (27.88307pt too wide) in paragraph at lines 543--569
+Overfull \hbox (21.63446pt too wide) in paragraph at lines 543--569
  [][] 
  []
 
@@ -1179,7 +1179,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [12 <./Burzillo_Trounstine_Replication_files/figure-latex/coef_plot_rp-1.pdf>]
 <Burzillo_Trounstine_Replication_files/figure-latex/city_pops_histogram-1.pdf, 
-id=142, 455.7025pt x 316.18124pt>
+id=146, 455.7025pt x 316.18124pt>
 File: Burzillo_Trounstine_Replication_files/figure-latex/city_pops_histogram-1.
 pdf Graphic file (type pdf)
 
@@ -1203,7 +1203,7 @@ Overfull \hbox (17.10616pt too wide) in paragraph at lines 620--645
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (19.21742pt too wide) in paragraph at lines 651--677
+Overfull \hbox (3.91193pt too wide) in paragraph at lines 651--677
  [][] 
  []
 
@@ -1213,7 +1213,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 [14 <./Burzillo_Trounstine_Replication_files/figure-latex/city_pops_histogram-1
 .pdf>]
 <Burzillo_Trounstine_Replication_files/figure-latex/coef_plot_originals_over_un
-der-1.pdf, id=161, 463.7325pt x 316.18124pt>
+der-1.pdf, id=165, 463.7325pt x 316.18124pt>
 File: Burzillo_Trounstine_Replication_files/figure-latex/coef_plot_originals_ov
 er_under-1.pdf Graphic file (type pdf)
 
@@ -1237,26 +1237,29 @@ ation with the same identifier (name{table.4}) has been already used, duplicate
 l.697 ...plot_originals_over_under-1} \end{center}
                                                   ] [16 <./Burzillo_Trounstine_
 Replication_files/figure-latex/coef_plot_originals_over_under-1.pdf>] [17] [18]
-[19]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 828.
+(Font)              <9> on input line 825.
 
-Overfull \hbox (11.38503pt too wide) in paragraph at lines 828--859
+Overfull \hbox (11.38503pt too wide) in paragraph at lines 825--856
  [][] 
  []
 
-<table_1.png, id=194, 608.2725pt x 411.5375pt>
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 859.
+
+<table_1.png, id=192, 608.2725pt x 411.5375pt>
 File: table_1.png Graphic file (type png)
 <use table_1.png>
 Package pdftex.def Info: table_1.png used on input line 863.
 (pdftex.def)             Requested size: 469.7635pt x 317.82678pt.
-[20pdfTeX warning (ext4): destination with the same identifier (name{table.5}) 
+[19pdfTeX warning (ext4): destination with the same identifier (name{table.5}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.870 \newpage
-              ] [21pdfTeX warning (ext4): destination with the same identifier 
+              ] [20pdfTeX warning (ext4): destination with the same identifier 
 (name{figure.4}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1268,23 +1271,23 @@ Overfull \hbox (0.54793pt too wide) in paragraph at lines 943--948
 c Goods: SEGREGATION AND INEQUALITY IN PUBLIC
  []
 
-[22]
+[21]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 955.
-[23]
+[22]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 955.
 (./Burzillo_Trounstine_Replication.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 955.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 955.
 Package rerunfilecheck Info: File `Burzillo_Trounstine_Replication.out' has not
  changed.
-(rerunfilecheck)             Checksum: 6EC2E0C3FEDBAB41500839A5570AC3F2;790.
+(rerunfilecheck)             Checksum: F5188E998897E5103A4280F53CEBA1E8;887.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 955.
  ) 
 Here is how much of TeX's memory you used:
- 14455 strings out of 492995
- 208686 string characters out of 6132704
- 334669 words of memory out of 5000000
- 17586 multiletter control sequences out of 15000+600000
+ 14458 strings out of 492995
+ 208719 string characters out of 6132704
+ 334704 words of memory out of 5000000
+ 17588 multiletter control sequences out of 15000+600000
  75080 words of font info for 122 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  35i,16n,38p,1002b,522s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1303,11 +1306,11 @@ ic/lm/lmr8.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmr9.p
 fb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmri10.pfb></usr/l
 ocal/texlive/2017/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texliv
 e/2017/texmf-dist/fonts/type1/public/lm/lmsy9.pfb>
-Output written on Burzillo_Trounstine_Replication.pdf (23 pages, 842889 bytes).
+Output written on Burzillo_Trounstine_Replication.pdf (22 pages, 843012 bytes).
 
 PDF statistics:
- 315 PDF objects out of 1000 (max. 8388607)
- 253 compressed objects within 3 object streams
- 65 named destinations out of 1000 (max. 500000)
- 18532 words of extra memory for PDF output out of 20736 (max. 10000000)
+ 316 PDF objects out of 1000 (max. 8388607)
+ 255 compressed objects within 3 object streams
+ 66 named destinations out of 1000 (max. 500000)
+ 18540 words of extra memory for PDF output out of 20736 (max. 10000000)
 

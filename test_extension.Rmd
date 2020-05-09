@@ -273,4 +273,5 @@ The results of the model with the new dataset are slightly different in comparis
 
 In the second regression, the results are similar. The main coefficient on segregation index has decreased in magnitude, although in these specifications, it remains statistically significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Latino, and median household income have all switched signs.
 
+
 In the third regression, like in the second, the main coefficient on segregation index has decreased in magnitude but remains significant. The other coefficients except for the biracial indicator are insignificant, and the coefficients on percent Black, percent Asian, median income, and logged population have switched signs. In all three of the specifications, tandard errors reduced slightly using the larger, multiply imputed datasets compared to the original analysis with the original data in @trounstine_segregation_2016. 

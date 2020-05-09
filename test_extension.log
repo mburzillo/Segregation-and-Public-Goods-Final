@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  8 MAY 2020 14:13
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  8 MAY 2020 17:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1109,33 +1109,38 @@ Overfull \hbox (14.66194pt too wide) in paragraph at lines 374--407
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[6] [7pdfTeX warning (ext4): destination with the same identifier (name{table.1
-}) has been already used, duplicate ignored
+[6]
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 436.
+
+[7pdfTeX warning (ext4): destination with the same identifier (name{table.1}) h
+as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.456 \leavevmode
-                 \hypertarget{ref-bharathi_public_2018}{}%]
-Overfull \hbox (0.54793pt too wide) in paragraph at lines 511--516
+l.454 \leavevmode
+                 \hypertarget{ref-baqir_public_1999}{}%]
+Overfull \hbox (0.54793pt too wide) in paragraph at lines 514--519
 [][]\T1/lmr/m/n/10 (-20) ---------. 2016. ``Segregation and Inequality in Publi
 c Goods: SEGREGATION AND INEQUALITY IN PUBLIC
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 523.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 526.
 [8]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 523.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 526.
 (./test_extension.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 523.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 523.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 526.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 526.
 Package rerunfilecheck Info: File `test_extension.out' has not changed.
-(rerunfilecheck)             Checksum: D9F3648D553351646B8ABE1AB651B485;508.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 523.
+(rerunfilecheck)             Checksum: 6DB449D3EC9CF02B714C6834C6D0BA82;605.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 526.
  ) 
 Here is how much of TeX's memory you used:
- 14346 strings out of 492995
- 205556 string characters out of 6132704
- 328911 words of memory out of 5000000
- 17531 multiletter control sequences out of 15000+600000
+ 14350 strings out of 492995
+ 205596 string characters out of 6132704
+ 328945 words of memory out of 5000000
+ 17533 multiletter control sequences out of 15000+600000
  64225 words of font info for 105 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  35i,16n,38p,260b,522s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1152,10 +1157,10 @@ cal/texlive/2017/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive
 type1/public/lm/lmr7.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public
 /lm/lmr8.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmri10.p
 fb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmsy10.pfb>
-Output written on test_extension.pdf (8 pages, 244492 bytes).
+Output written on test_extension.pdf (8 pages, 244823 bytes).
 PDF statistics:
- 161 PDF objects out of 1000 (max. 8388607)
- 138 compressed objects within 2 object streams
- 36 named destinations out of 1000 (max. 500000)
- 14377 words of extra memory for PDF output out of 14400 (max. 10000000)
+ 171 PDF objects out of 1000 (max. 8388607)
+ 148 compressed objects within 2 object streams
+ 38 named destinations out of 1000 (max. 500000)
+ 14385 words of extra memory for PDF output out of 14400 (max. 10000000)
 
